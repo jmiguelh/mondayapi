@@ -1,5 +1,5 @@
 CREATE TABLE "projeto" (
-  "id" INTEGER NOT NULL PRIMARY KEY,
+  "id" VARCHAR(15) NOT NULL PRIMARY KEY,
   "projeto" VARCHAR(250) NOT NULL,
   "resposaveis" VARCHAR(255) NOT NULL,
   "status" VARCHAR(50) NOT NULL,
