@@ -3,7 +3,7 @@ import requests
 from dotenv import load_dotenv
 
 from models.db import *
-from log.log import log
+from log.log import *
 from models.db import *
 
 load_dotenv()
@@ -34,9 +34,9 @@ def carregar(apiUrl, headers, board):
                     }
                   }
               }
+            }
         }
-    }
-}""" % (
+    }""" % (
         board
     )
     data = {"query": query}
@@ -55,8 +55,32 @@ def carregar(apiUrl, headers, board):
             link = p["column_values"][5]["text"]
             pcr = p["column_values"][6]["text"]
 
+            inserir_projeto(id, projeto, resposaveis, status, data, evolucao, link, pcr)
 
-def inserir_projeto(): ...
+
+def inserir_projeto(
+    id: "str",
+    projeto: "str",
+    resposaveis: "str",
+    status: "str",
+    data: "str",
+    evolucao: "int",
+    link: "str",
+    pcr: "str",
+):
+    with db_session(optimistic=False):
+        p = Projeto.get(id=id)
+        if p == None:
+            Projeto(
+                id=id,
+                projeto=projeto,
+                resposaveis=resposaveis,
+                status=status,
+                data=data,
+                evolucao=evolucao,
+                link=link,
+                pcr=pcr,
+            )
 
 
 carregar(apiUrl, headers, board)
