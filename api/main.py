@@ -2,7 +2,6 @@ import os
 import requests
 import json
 from dotenv import load_dotenv
-from monday import MondayClient
 
 load_dotenv()
 
@@ -39,9 +38,3 @@ data = {"query": query}
 
 r = requests.post(url=apiUrl, json=data, headers=headers)  # make request
 print(r.json())
-
-
-# monday = MondayClient(apiKey)
-
-# monday.boards.fetch_boards_by_id(5808464075)
-# monday.boards.fetch_items_by_board_id(board_ids=5808464075, limit=50)
