@@ -7,7 +7,7 @@ db = Database()
 
 class Projeto(db.Entity):
     _table_ = "projeto"
-    id = PrimaryKey(int, auto=True)
+    id = PrimaryKey(int)
     projeto = Required(str, 250)
     resposaveis = Optional(str, 255)
     status = Optional(str, 50)
@@ -16,5 +16,7 @@ class Projeto(db.Entity):
     link = Optional(str, 255)
     pcr = Optional(str)
 
+
+db.bind(provider="sqlite", filename="../data/db.sqlite", create_db=True)
 
 db.generate_mapping()
