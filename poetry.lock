@@ -273,6 +273,17 @@ files = [
 ptyprocess = ">=0.5"
 
 [[package]]
+name = "pony"
+version = "0.7.17"
+description = "Pony Object-Relational Mapper"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pony-0.7.17-py3-none-any.whl", hash = "sha256:c37e9b44f975d147b79cf56925b16b0e40b2b47ba5958d0c01579f37a5a24f7c"},
+    {file = "pony-0.7.17.tar.gz", hash = "sha256:b72172d57abd5e0846cd8d71231572da20f526327bf0d33348a9276f624d8aa7"},
+]
+
+[[package]]
 name = "prompt-toolkit"
 version = "3.0.43"
 description = "Library for building powerful interactive command lines in Python"
@@ -437,4 +448,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "cf5cd3c87deb084a2356e0aaabaf97e8f1f9086e94c3e4fa45f5f7f5c7798439"
+content-hash = "887266ce41b85fcb3ccd745bb357bb899445edc0844525616c7bd59bfbb59417"
