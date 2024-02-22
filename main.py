@@ -15,6 +15,7 @@ board = "5808464075"
 
 
 def carregar(apiUrl, headers, board):
+    logar("MONDAY", f"Buscando projetos")
     query = """{
     boards(ids: %s) {
         groups {
@@ -56,6 +57,7 @@ def carregar(apiUrl, headers, board):
             pcr = p["column_values"][6]["text"]
 
             inserir_projeto(id, projeto, resposaveis, status, data, evolucao, link, pcr)
+    logar("MONDAY", f"Concluído")
 
 
 def inserir_projeto(
@@ -71,6 +73,7 @@ def inserir_projeto(
     with db_session(optimistic=False):
         p = Projeto.get(id=id)
         if p == None:
+            logar("PROJETO", f"Projeto incluído: {projeto}")
             Projeto(
                 id=id,
                 projeto=projeto,
@@ -81,6 +84,16 @@ def inserir_projeto(
                 link=link,
                 pcr=pcr,
             )
+        else:
+            logar("PROJETO", f"Projeto alterado: {projeto}")
+            p.projeto = projeto
+            p.resposaveis = resposaveis
+            p.status = status
+            p.data = data
+            p.evolucao = evolucao
+            p.link = link
+            p.pcr = pcr
 
 
-carregar(apiUrl, headers, board)
+if __name__ == "__main__":
+    carregar(apiUrl, headers, board)
