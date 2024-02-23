@@ -14,6 +14,7 @@ class Projeto(db.Entity):
     evolucao = Optional(int, default=0)
     link = Optional(str, 255)
     pcr = Optional(str)
+    setor = Optional(str, 20)
 
 
 db.bind(provider="sqlite", filename="../data/db.sqlite", create_db=True)

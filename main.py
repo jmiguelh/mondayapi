@@ -56,7 +56,9 @@ def carregar(apiUrl, headers, board):
             link = p["column_values"][5]["text"]
             pcr = p["column_values"][6]["text"]
 
-            inserir_projeto(id, projeto, resposaveis, status, data, evolucao, link, pcr)
+            inserir_projeto(
+                id, projeto, resposaveis, status, data, evolucao, link, pcr, setor
+            )
     logar("MONDAY", f"Concluído")
 
 
@@ -69,6 +71,7 @@ def inserir_projeto(
     evolucao: "int",
     link: "str",
     pcr: "str",
+    setor: "str",
 ):
     with db_session(optimistic=False):
         p = Projeto.get(id=id)
@@ -83,6 +86,7 @@ def inserir_projeto(
                 evolucao=evolucao,
                 link=link,
                 pcr=pcr,
+                setor=setor,
             )
         else:
             logar("PROJETO", f"Projeto alterado: {projeto}")
@@ -93,6 +97,7 @@ def inserir_projeto(
             p.evolucao = evolucao
             p.link = link
             p.pcr = pcr
+            p.setor = setor
 
 
 if __name__ == "__main__":
