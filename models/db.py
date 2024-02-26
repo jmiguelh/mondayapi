@@ -1,3 +1,4 @@
+from datetime import datetime
 from pony.orm import *
 
 
@@ -15,6 +16,17 @@ class Projeto(db.Entity):
     link = Optional(str, 255)
     pcr = Optional(str)
     setor = Optional(str, 20)
+
+
+class Controle(db.Entity):
+    _table_ = "controle"
+    atualizacao = Optional(datetime)
+
+
+@db_session
+def ultima_atualzacao() -> datetime:
+    c = Controle.get(id=1)
+    return c.atualizacao.strftime("%d/%m/%Y %H:%M:%S")
 
 
 db.bind(provider="sqlite", filename="../data/db.sqlite", create_db=True)

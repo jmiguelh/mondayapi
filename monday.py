@@ -6,15 +6,15 @@ from models.db import *
 from log.log import *
 from models.db import *
 
-load_dotenv()
 
-apiKey = os.getenv("API_KEY")
-apiUrl = os.getenv("BASE_URL")
-headers = {"Authorization": apiKey}
-board = "5808464075"
+def carregar():
+    load_dotenv()
 
+    apiKey = os.getenv("API_KEY")
+    apiUrl = os.getenv("BASE_URL")
+    headers = {"Authorization": apiKey}
+    board = "5808464075"
 
-def carregar(apiUrl, headers, board):
     logar("MONDAY", f"Buscando projetos")
     query = """{
     boards(ids: %s) {
@@ -59,6 +59,7 @@ def carregar(apiUrl, headers, board):
             inserir_projeto(
                 id, projeto, resposaveis, status, data, evolucao, link, pcr, setor
             )
+    atualizar()
     logar("MONDAY", f"Concluído")
 
 
@@ -100,5 +101,11 @@ def inserir_projeto(
             p.setor = setor
 
 
+def atualizar():
+    with db_session(optimistic=False):
+        c = Controle.get(id=1)
+        c.atualizacao = datetime.now()
+
+
 if __name__ == "__main__":
-    carregar(apiUrl, headers, board)
+    carregar()
