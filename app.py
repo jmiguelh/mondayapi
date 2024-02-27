@@ -6,8 +6,6 @@ import time
 from monday import ultima_atualzacao, carregar
 import models.painel as painel
 
-SETOR = ["Todos", "Segurança", "Infra", "Sistemas"]
-
 COLOR_DISCRETE_MAP = {"Segurança": "olive", "Infra": "orange", "Sistemas": "royalblue"}
 
 
@@ -46,7 +44,7 @@ def colorir_linha(row):
 
 def monday():
     st.set_page_config(
-        page_title="Lunelli - Portfólio – TI ",
+        page_title="Lunelli - Portfólio TI ",
         page_icon="🧊",
         layout="wide",
         initial_sidebar_state="auto",
@@ -92,7 +90,6 @@ def monday():
                     }
                 },
             )
-        # a1.metric(label="Total de projetos", value=len(df))
         with a2:
             hasClicked = card(
                 title=len(df.loc[df.Status == "Feito"]),
@@ -105,7 +102,6 @@ def monday():
                     }
                 },
             )
-        # a2.metric(label="Projetos Concluídos", value=len(df.loc[df.Status == "Feito"]))
 
         b.write("Projetos por Setor")
         fig = px.bar(
@@ -158,12 +154,6 @@ def monday():
             hide_index=True,
         )
 
-        # b.write("Projetos")
-        # b.dataframe(
-        #     df_filtrados[["Projeto", "Setor", "Evolução", "Status"]],
-        #     use_container_width=True,
-        #     hide_index=True,
-        # )
     ### Segurança ###
     with tab2:
         setor = "Segurança"
