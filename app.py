@@ -209,7 +209,7 @@ def aba_setor(setor, df):
             },
         )
 
-    b.write("Projetos por Setor")
+    b.write("Projetos por Status")
     fig = px.bar(
         df_setor.groupby(["Status"]).count().reset_index(),
         x="Projeto",
