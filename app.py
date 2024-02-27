@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit_card import card
 import pandas as pd
 import plotly.express as px
 import time
@@ -13,8 +14,6 @@ COLOR_DISCRETE_MAP = {"Segurança": "olive", "Infra": "orange", "Sistemas": "roy
 def barra_lateral():
     with st.sidebar:
         st.image("img/lunelli_colorida.png", width=250)
-        with st.expander(":pushpin: Filtos"):
-            setor = st.selectbox("Setor:", SETOR)
         with st.expander(
             f":arrows_counterclockwise: Última atualização: {ultima_atualzacao()}"
         ):
@@ -26,7 +25,6 @@ def barra_lateral():
                 st.rerun()
 
         st.write("")
-        return setor
 
 
 def colorir_linha(row):
@@ -69,18 +67,9 @@ def monday():
         unsafe_allow_html=True,
     )
 
-    setor = barra_lateral()
+    barra_lateral()
     ### Filtros ###
     df = painel.carregar_projetos()
-
-    if setor != "Todos":
-        df_filtrados = df[df.Setor == setor]
-    else:
-        df_filtrados = df
-    df_filtrados = df_filtrados.sort_values(
-        by=["Setor", "Evolução"],
-        ascending=[True, False],
-    )
 
     st.title("Portfólio – TI - 2024")
 
@@ -91,15 +80,32 @@ def monday():
         linha = st.container()
         a, b = linha.columns(2)
         a1, a2 = a.columns(2)
-        a1.metric(label="Total de projetos", value=len(df))
-        a2.metric(label="Projetos Concluídos", value=len(df.loc[df.Status == "Feito"]))
-
-        a.write("Projetos PCR")
-        a.dataframe(
-            df.loc[df.PCR == "Sim"][["Projeto", "Setor", "Evolução"]],
-            use_container_width=True,
-            hide_index=True,
-        )
+        with a1:
+            hasClicked = card(
+                title=len(df),
+                text="Total de projetos",
+                styles={
+                    "card": {
+                        "width": "200px",
+                        "height": "200px",
+                        "background-color": "LightGreen",
+                    }
+                },
+            )
+        # a1.metric(label="Total de projetos", value=len(df))
+        with a2:
+            hasClicked = card(
+                title=len(df.loc[df.Status == "Feito"]),
+                text="Projetos Concluídos",
+                styles={
+                    "card": {
+                        "width": "200px",
+                        "height": "200px",
+                        "background-color": "LightSalmon",
+                    }
+                },
+            )
+        # a2.metric(label="Projetos Concluídos", value=len(df.loc[df.Status == "Feito"]))
 
         b.write("Projetos por Setor")
         fig = px.bar(
@@ -144,20 +150,97 @@ def monday():
             )
         )
         a.plotly_chart(fig, use_container_width=True)
-        b.write("Projetos")
+
+        b.write("Projetos PCR")
         b.dataframe(
-            df_filtrados[["Projeto", "Setor", "Evolução", "Status"]],
+            df.loc[df.PCR == "Sim"][["Projeto", "Setor", "% Evolução"]],
             use_container_width=True,
             hide_index=True,
         )
-    ### Prioridade ###
+
+        # b.write("Projetos")
+        # b.dataframe(
+        #     df_filtrados[["Projeto", "Setor", "Evolução", "Status"]],
+        #     use_container_width=True,
+        #     hide_index=True,
+        # )
+    ### Segurança ###
     with tab2:
-        ...
-    ### Dados ###
+        setor = "Segurança"
+        aba_setor(setor, df)
+
+    ### Infra ###
     with tab3:
-        ...
+        setor = "Infra"
+        aba_setor(setor, df)
+    ### Sistema ###
     with tab4:
-        ...
+        setor = "Sistemas"
+        aba_setor(setor, df)
+
+
+def aba_setor(setor, df):
+    df_setor = df.loc[df.Setor == setor]
+    linha = st.container()
+    a, b = linha.columns(2)
+    a1, a2 = a.columns(2)
+    with a1:
+        hasClicked = card(
+            title=len(df_setor),
+            text="Total de projetos",
+            styles={
+                "card": {
+                    "width": "200px",
+                    "height": "200px",
+                    "background-color": "LightGreen",
+                }
+            },
+        )
+    with a2:
+        hasClicked = card(
+            title=len(df_setor.loc[df_setor.Status == "Feito"]),
+            text="Projetos Concluídos",
+            styles={
+                "card": {
+                    "width": "200px",
+                    "height": "200px",
+                    "background-color": "LightSalmon",
+                }
+            },
+        )
+
+    b.write("Projetos por Setor")
+    fig = px.bar(
+        df_setor.groupby(["Status"]).count().reset_index(),
+        x="Projeto",
+        y="Status",
+        color="Status",
+        text_auto=True,
+        color_discrete_sequence=px.colors.qualitative.Set2,
+        orientation="h",
+    )
+    fig.update_layout(
+        legend=dict(
+            orientation="h",
+            entrywidth=70,
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1,
+        )
+    )
+    b.plotly_chart(fig, use_container_width=True)
+
+    st.write("Projetos")
+    df_setor = df_setor.sort_values(
+        by=["% Evolução"],
+        ascending=[False],
+    )
+    st.dataframe(
+        df_setor[["Projeto", "% Evolução", "Status"]],
+        use_container_width=True,
+        hide_index=True,
+    )
 
 
 if __name__ == "__main__":

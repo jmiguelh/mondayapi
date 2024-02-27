@@ -18,7 +18,7 @@ def carregar_projetos() -> pd.DataFrame:
             "Resposaveis",
             "Status",
             "Data",
-            "Evolução",
+            "% Evolução",
             "Link",
             "PCR",
             "Setor",

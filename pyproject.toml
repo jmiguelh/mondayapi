@@ -13,6 +13,7 @@ pony = "^0.7.17"
 streamlit = "^1.31.1"
 pandas = "^2.2.1"
 plotly = "^5.19.0"
+streamlit-card = "^1.0.0"
 
 
 [tool.poetry.group.dev.dependencies]

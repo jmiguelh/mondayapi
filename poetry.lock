@@ -1218,6 +1218,20 @@ watchdog = {version = ">=2.1.5", markers = "platform_system != \"Darwin\""}
 snowflake = ["snowflake-connector-python (>=2.8.0)", "snowflake-snowpark-python (>=0.9.0)"]
 
 [[package]]
+name = "streamlit-card"
+version = "1.0.0"
+description = "A streamlit component, to make UI cards"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "streamlit-card-1.0.0.tar.gz", hash = "sha256:be8b784d8145a4efe3c97c191db7727c96dea97912385957279ec42a7f547674"},
+    {file = "streamlit_card-1.0.0-py3-none-any.whl", hash = "sha256:625ab3cd1e5368c7d9c5aeeb52a67786183e0dba940d668c556fbae01149fb3f"},
+]
+
+[package.dependencies]
+streamlit = ">=0.63"
+
+[[package]]
 name = "tenacity"
 version = "8.2.3"
 description = "Retry code until it succeeds"
@@ -1436,4 +1450,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "534be5258b3f5d46bf5fc28a232b02d292bc86abe05f409395fb92bd25d281d1"
+content-hash = "4acc55a6d0850664b4fa041353f049a9536c60db3d0fdc45fcc7f6967f5a9fff"
