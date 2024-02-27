@@ -27,6 +27,7 @@ def carregar():
                 items {
                     id
                     name
+                    updated_at
                     column_values {
                         column {
                             title
@@ -40,9 +41,9 @@ def carregar():
     }""" % (
         board
     )
-    data = {"query": query}
+    pesquisa = {"query": query}
 
-    r = requests.post(url=apiUrl, json=data, headers=headers)  # make request
+    r = requests.post(url=apiUrl, json=pesquisa, headers=headers)  # make request
 
     for s in r.json()["data"]["boards"][0]["groups"]:
         setor = s["title"]
@@ -55,9 +56,19 @@ def carregar():
             evolucao = p["column_values"][4]["text"]
             link = p["column_values"][5]["text"]
             pcr = p["column_values"][6]["text"]
+            atualizacao = p["updated_at"]
 
             inserir_projeto(
-                id, projeto, resposaveis, status, data, evolucao, link, pcr, setor
+                id,
+                projeto,
+                resposaveis,
+                status,
+                data,
+                evolucao,
+                link,
+                pcr,
+                setor,
+                atualizacao,
             )
     atualizar()
     logar("MONDAY", f"Concluído")
@@ -73,6 +84,7 @@ def inserir_projeto(
     link: "str",
     pcr: "str",
     setor: "str",
+    atualizacao: "str",
 ):
     with db_session(optimistic=False):
         p = Projeto.get(id=id)
@@ -83,7 +95,6 @@ def inserir_projeto(
                 projeto=projeto,
                 resposaveis=resposaveis,
                 status=status,
-                data=data,
                 evolucao=evolucao,
                 link=link,
                 pcr=pcr,
@@ -94,11 +105,13 @@ def inserir_projeto(
             p.projeto = projeto
             p.resposaveis = resposaveis
             p.status = status
-            p.data = data
+            if data != "":
+                p.data = datetime.strptime(data, "%Y-%m-%d")
             p.evolucao = evolucao
             p.link = link
             p.pcr = pcr
             p.setor = setor
+            p.atualizacao = datetime.strptime(atualizacao, "%Y-%m-%dT%H:%M:%S%z")
 
 
 def atualizar():

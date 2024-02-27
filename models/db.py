@@ -11,11 +11,12 @@ class Projeto(db.Entity):
     projeto = Required(str, 250)
     resposaveis = Optional(str, 255)
     status = Optional(str, 50)
-    data = Optional(str)
+    data = Optional(datetime)
     evolucao = Optional(int, default=0)
     link = Optional(str, 255)
     pcr = Optional(str)
     setor = Optional(str, 20)
+    atualizacao = Optional(datetime)
 
 
 class Controle(db.Entity):

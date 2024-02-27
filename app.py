@@ -69,7 +69,7 @@ def monday():
     ### Filtros ###
     df = painel.carregar_projetos()
 
-    st.title("Portfólio – TI - 2024")
+    st.title("Portfólio TI - 2024")
 
     tab1, tab2, tab3, tab4 = st.tabs(["Resumo", "Segurança", "Infra", "Sistemas"])
 
