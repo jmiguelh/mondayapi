@@ -3,6 +3,7 @@ from streamlit_card import card
 import pandas as pd
 import plotly.express as px
 import time
+import random
 from monday import ultima_atualzacao, carregar
 import models.painel as painel
 
@@ -89,10 +90,11 @@ def monday():
                         "background-color": "LightGreen",
                     }
                 },
+                key=random.randint(1, 5000),
             )
         with a2:
             hasClicked = card(
-                title=len(df.loc[df.Status == "Feito"]),
+                title=str(len(df.loc[df.Status == "Feito"])),
                 text="Projetos Concluídos",
                 styles={
                     "card": {
@@ -101,6 +103,7 @@ def monday():
                         "background-color": "LightSalmon",
                     }
                 },
+                key=random.randint(1, 5000),
             )
 
         b.write("Projetos por Setor")
@@ -185,6 +188,7 @@ def aba_setor(setor, df):
                     "background-color": "LightGreen",
                 }
             },
+            key=random.randint(1, 5000),
         )
     with a2:
         hasClicked = card(
@@ -197,6 +201,7 @@ def aba_setor(setor, df):
                     "background-color": "LightSalmon",
                 }
             },
+            key=random.randint(1, 5000),
         )
 
     b.write("Projetos por Status")

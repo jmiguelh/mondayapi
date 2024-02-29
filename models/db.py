@@ -24,6 +24,15 @@ class Controle(db.Entity):
     atualizacao = Optional(datetime)
 
 
+class Comentario(db.Entity):
+    _table_ = "comentario"
+    id = PrimaryKey(str, 15, auto=True)
+    id_projeto = Required(str, 15)
+    autor = Required(str, 50)
+    texto = Optional(str)
+    atualizacao = Required(datetime)
+
+
 @db_session
 def ultima_atualzacao() -> datetime:
     c = Controle.get(id=1)

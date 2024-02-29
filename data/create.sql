@@ -8,3 +8,11 @@ CREATE TABLE "projeto" (
   "link" VARCHAR(255) NOT NULL,
   "pcr" TEXT NOT NULL
 )
+
+CREATE TABLE "comentario" (
+  "id" VARCHAR(15) NOT NULL PRIMARY KEY,
+  "id_projeto" VARCHAR(15) NOT NULL,
+  "autor" VARCHAR(50) NOT NULL,
+  "texto" TEXT NOT NULL,
+  "atualizacao" DATETIME NOT NULL
+);

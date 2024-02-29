@@ -15,7 +15,14 @@ def carregar():
     headers = {"Authorization": apiKey}
     board = "5808464075"
 
-    logar("MONDAY", f"Buscando projetos")
+    carregar_projetos(apiUrl, headers, board)
+    carregar_comentarios(apiUrl, headers)
+    atualizar()
+    logar("MONDAY", f"Concluído")
+
+
+def carregar_projetos(apiUrl: "str", headers: "str", board: "str"):
+    logar("PROJETOS", f"Buscando projetos")
     query = """{
     boards(ids: %s) {
         groups {
@@ -57,7 +64,7 @@ def carregar():
             link = p["column_values"][5]["text"]
             pcr = p["column_values"][6]["text"]
             atualizacao = p["updated_at"]
-
+            logar("PROJETOS", f"Projetos: {projeto}")
             inserir_projeto(
                 id,
                 projeto,
@@ -70,8 +77,7 @@ def carregar():
                 setor,
                 atualizacao,
             )
-    atualizar()
-    logar("MONDAY", f"Concluído")
+    logar("PROJETOS", f"Concluído projetos")
 
 
 def inserir_projeto(
@@ -99,6 +105,7 @@ def inserir_projeto(
                 link=link,
                 pcr=pcr,
                 setor=setor,
+                atualizacao=datetime.strptime(atualizacao, "%Y-%m-%dT%H:%M:%S%z"),
             )
         else:
             logar("PROJETO", f"Projeto alterado: {projeto}")
@@ -118,6 +125,69 @@ def atualizar():
     with db_session(optimistic=False):
         c = Controle.get(id=1)
         c.atualizacao = datetime.now()
+
+
+def carregar_comentarios(apiUrl: "str", headers: "str"):
+
+    logar("COMENTÁROS", f"Buscando comentários")
+    query = """{
+            updates(limit: 1000) {
+                id
+                item_id
+                creator {
+                name
+                }
+                text_body
+                created_at
+            }
+        }"""
+    pesquisa = {"query": query}
+
+    r = requests.post(url=apiUrl, json=pesquisa, headers=headers)  # make request
+
+    for c in r.json()["data"]["updates"]:
+        id = c["id"]
+        id_projeto = c["item_id"]
+        autor = c["creator"]["name"]
+        texto = c["text_body"]
+        atualizacao = c["created_at"]
+        with db_session(optimistic=False):
+            p = Projeto.get(id=id_projeto)
+            if p != None:
+                logar("COMENTÁROS", f"Projetos: {p.projeto}")
+
+                inserir_comentario(
+                    id,
+                    id_projeto,
+                    autor,
+                    texto,
+                    atualizacao,
+                )
+    logar("COMENTÁROS", f"Concluído comentários")
+
+
+def inserir_comentario(
+    id: "str",
+    id_projeto: "str",
+    autor: "str",
+    texto: "str",
+    atualizacao: "str",
+):
+    with db_session(optimistic=False):
+        c = Comentario.get(id=id)
+        if c == None:
+            Comentario(
+                id=id,
+                id_projeto=id_projeto,
+                autor=autor,
+                texto=texto,
+                atualizacao=datetime.strptime(atualizacao, "%Y-%m-%dT%H:%M:%S%z"),
+            )
+        else:
+            c.id_projeto = id_projeto
+            c.autor = autor
+            c.texto = texto
+            c.atualizacao = datetime.strptime(atualizacao, "%Y-%m-%dT%H:%M:%S%z")
 
 
 if __name__ == "__main__":
