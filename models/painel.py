@@ -25,6 +25,8 @@ def carregar_projetos() -> pd.DataFrame:
         ],
     )
     df = df.set_index("id")
+    df["Data"] = pd.to_datetime(df["Data"], errors="coerce")
+    df["Data"] = df["Data"].dt.strftime("%d/%m/%Y")
     return df
 
 

@@ -232,7 +232,7 @@ def aba_setor(setor, df):
         ascending=[False],
     )
     st.dataframe(
-        df_setor[["Projeto", "% Evolução", "Status"]],
+        df_setor[["Projeto", "% Evolução", "Status", "Data"]],
         use_container_width=True,
         hide_index=True,
     )
