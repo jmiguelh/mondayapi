@@ -33,6 +33,20 @@ class Comentario(db.Entity):
     atualizacao = Required(datetime)
 
 
+class Robo(db.Entity):
+    _table_ = "robo"
+    id = PrimaryKey(str, 15)
+    grupo = Required(str, 50)
+    robo = Required(str, 250)
+    resposaveis = Optional(str, 255)
+    codigo = Optional(str, 10)
+    link = Optional(str, 255)
+    status = Optional(str, 50)
+    fte = Optional(float)
+    setor = Optional(str, 255)
+    usuario = Optional(str, 255)
+
+
 @db_session
 def ultima_atualzacao() -> datetime:
     c = Controle.get(id=1)

@@ -14,9 +14,11 @@ def carregar():
     apiUrl = os.getenv("BASE_URL")
     headers = {"Authorization": apiKey}
     board = "5808464075"
+    boardcoe = "4474587272"
 
     carregar_projetos(apiUrl, headers, board)
     carregar_comentarios(apiUrl, headers)
+    carregar_robo(apiUrl, headers, boardcoe)
     atualizar()
     logar("MONDAY", f"Concluído")
 
@@ -188,6 +190,110 @@ def inserir_comentario(
             c.autor = autor
             c.texto = texto
             c.atualizacao = datetime.strptime(atualizacao, "%Y-%m-%dT%H:%M:%S%z")
+
+
+def carregar_robo(apiUrl: "str", headers: "str", board: "str"):
+    logar("ROBÔS", f"Buscando robôs")
+    query = """{
+    boards(ids: %s) {
+        groups {
+            id
+            title
+            position
+            color
+            items_page(limit: 100) {
+                items {
+                    id
+                    name
+                    updated_at
+                    column_values {
+                        column {
+                            title
+                        }
+                        text
+                    }
+                  }
+              }
+            }
+        }
+    }""" % (
+        board
+    )
+    pesquisa = {"query": query}
+
+    r = requests.post(url=apiUrl, json=pesquisa, headers=headers)  # make request
+
+    for s in r.json()["data"]["boards"][0]["groups"]:
+        grupo = s["title"]
+        for p in s["items_page"]["items"]:
+            id = p["id"]
+            robo = p["name"]
+            resposaveis = p["column_values"][1]["text"]
+            codigo = p["column_values"][2]["text"][
+                : p["column_values"][2]["text"].find(" - ")
+            ]
+            link = p["column_values"][2]["text"][
+                p["column_values"][2]["text"].find("https") :
+            ]
+            status = p["column_values"][3]["text"]
+            fte = p["column_values"][5]["text"]
+            setor = p["column_values"][7]["text"]
+            usuario = p["column_values"][8]["text"]
+            logar("ROBO", f"Robô: {robo}")
+            inserir_robo(
+                id,
+                grupo,
+                robo,
+                resposaveis,
+                codigo,
+                link,
+                status,
+                fte,
+                setor,
+                usuario,
+            )
+    logar("ROBÔS", f"Concluído robôs")
+
+
+def inserir_robo(
+    id: "str",
+    grupo: "str",
+    robo: "str",
+    resposaveis: "str",
+    codigo: "str",
+    link: "str",
+    status: "str",
+    fte: "float",
+    setor: "str",
+    usuario: "str",
+):
+    with db_session(optimistic=False):
+        p = Robo.get(id=id)
+        if p == None:
+            logar("ROBO", f"Robo incluído: {robo}")
+            Robo(
+                id=id,
+                grupo=grupo,
+                robo=robo,
+                resposaveis=resposaveis,
+                codigo=codigo,
+                link=link,
+                status=status,
+                fte=fte,
+                setor=setor,
+                usuario=usuario,
+            )
+        else:
+            logar("ROBO", f"Robô alterado: {robo}")
+            p.robo = robo
+            p.grupo = grupo
+            p.resposaveis = resposaveis
+            p.codigo = codigo
+            p.link = link
+            p.status = status
+            p.fte = fte
+            p.setor = setor
+            p.usuario = usuario
 
 
 if __name__ == "__main__":
