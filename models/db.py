@@ -40,7 +40,7 @@ class Robo(db.Entity):
     robo = Required(str, 250)
     resposaveis = Optional(str, 255)
     codigo = Optional(str, 10)
-    link = Optional(str, 255)
+    link = Optional(str, 500)
     status = Optional(str, 50)
     fte = Optional(float)
     setor = Optional(str, 255)

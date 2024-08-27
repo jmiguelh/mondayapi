@@ -23,7 +23,7 @@ CREATE TABLE "robo" (
   "robo" VARCHAR(250) NOT NULL,
   "resposaveis" VARCHAR(255) NOT NULL,
   "codigo" VARCHAR(10),
-  "link" VARCHAR(255) NOT NULL,
+  "link" VARCHAR(500) NOT NULL,
   "status" VARCHAR(50) NOT NULL,
   "fte" REAL,
   "setor" VARCHAR(255),

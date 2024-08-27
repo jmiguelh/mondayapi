@@ -248,7 +248,7 @@ def carregar_robo(apiUrl: "str", headers: "str", board: "str"):
                 codigo,
                 link,
                 status,
-                fte,
+                fte if fte != "" else 0,
                 setor,
                 usuario,
             )
@@ -291,7 +291,7 @@ def inserir_robo(
             p.codigo = codigo
             p.link = link
             p.status = status
-            p.fte = fte
+            p.fte = fte if fte != "" else 0
             p.setor = setor
             p.usuario = usuario
 
