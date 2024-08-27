@@ -15,7 +15,7 @@ CREATE TABLE projeto (
     evolucao    INTEGER,
     link        VARCHAR (255) NOT NULL,
     pcr         VARCAHR (3)   NOT NULL,
-    setor       VARCHAR (20)  NOT NULL,
+    setor       VARCHAR (100)  NOT NULL,
     atualizacao DATETIME
 );
 

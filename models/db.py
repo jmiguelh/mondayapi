@@ -15,7 +15,7 @@ class Projeto(db.Entity):
     evolucao = Optional(int, default=0)
     link = Optional(str, 255)
     pcr = Optional(str)
-    setor = Optional(str, 20)
+    setor = Optional(str, 100)
     atualizacao = Optional(datetime)
 
 
