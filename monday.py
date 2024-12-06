@@ -1,10 +1,11 @@
 import os
 import requests
 from dotenv import load_dotenv
+from datetime import datetime
 
-from models.db import *
-from log.log import *
-from models.db import *
+# from models.db import *
+from log.log import logar
+from models.db import db_session, Projeto, Controle, Comentario
 
 
 def carregar():
@@ -18,11 +19,11 @@ def carregar():
     carregar_projetos(apiUrl, headers, board)
     carregar_comentarios(apiUrl, headers)
     atualizar()
-    logar("MONDAY", f"Concluído")
+    logar("MONDAY", "Concluído")
 
 
 def carregar_projetos(apiUrl: "str", headers: "str", board: "str"):
-    logar("PROJETOS", f"Buscando projetos")
+    logar("PROJETOS", "Buscando projetos")
     query = """{
     boards(ids: %s) {
         groups {
@@ -75,7 +76,7 @@ def carregar_projetos(apiUrl: "str", headers: "str", board: "str"):
                 setor,
                 atualizacao,
             )
-    logar("PROJETOS", f"Concluído projetos")
+    logar("PROJETOS", "Concluído projetos")
 
 
 def inserir_projeto(
@@ -92,7 +93,7 @@ def inserir_projeto(
 ):
     with db_session(optimistic=False):
         p = Projeto.get(id=id)
-        if p == None:
+        if p is None:
             logar("PROJETO", f"Projeto incluído: {projeto}")
             Projeto(
                 id=id,
@@ -126,7 +127,7 @@ def atualizar():
 
 
 def carregar_comentarios(apiUrl: "str", headers: "str"):
-    logar("COMENTÁROS", f"Buscando comentários")
+    logar("COMENTÁROS", "Buscando comentários")
     query = """{
             updates(limit: 1000) {
                 id
@@ -150,7 +151,7 @@ def carregar_comentarios(apiUrl: "str", headers: "str"):
         atualizacao = c["created_at"]
         with db_session(optimistic=False):
             p = Projeto.get(id=id_projeto)
-            if p != None:
+            if p is not None:
                 logar("COMENTÁROS", f"Projetos: {p.projeto}")
 
                 inserir_comentario(
@@ -160,7 +161,7 @@ def carregar_comentarios(apiUrl: "str", headers: "str"):
                     texto,
                     atualizacao,
                 )
-    logar("COMENTÁROS", f"Concluído comentários")
+    logar("COMENTÁROS", "Concluído comentários")
 
 
 def inserir_comentario(
@@ -172,7 +173,7 @@ def inserir_comentario(
 ):
     with db_session(optimistic=False):
         c = Comentario.get(id=id)
-        if c == None:
+        if c is None:
             Comentario(
                 id=id,
                 id_projeto=id_projeto,

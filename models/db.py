@@ -1,5 +1,5 @@
 from datetime import datetime
-from pony.orm import *
+from pony.orm import Database, Optional, PrimaryKey, Required, db_session
 
 
 db = Database()

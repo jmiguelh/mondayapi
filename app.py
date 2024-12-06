@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlit_card import card
-import pandas as pd
+
+# import pandas as pd
 import plotly.express as px
 import time
 import random
@@ -80,7 +81,7 @@ def monday():
         a, b = linha.columns(2)
         a1, a2 = a.columns(2)
         with a1:
-            hasClicked = card(
+            card(
                 title=len(df),
                 text="Total de projetos",
                 styles={
@@ -93,7 +94,7 @@ def monday():
                 key=random.randint(1, 5000),
             )
         with a2:
-            hasClicked = card(
+            card(
                 title=str(len(df.loc[df.Status == "Feito"])),
                 text="Projetos Concluídos",
                 styles={
@@ -178,7 +179,7 @@ def aba_setor(setor, df):
     a, b = linha.columns(2)
     a1, a2 = a.columns(2)
     with a1:
-        hasClicked = card(
+        card(
             title=len(df_setor),
             text="Total de projetos",
             styles={
@@ -191,7 +192,7 @@ def aba_setor(setor, df):
             key=random.randint(1, 5000),
         )
     with a2:
-        hasClicked = card(
+        card(
             title=len(df_setor.loc[df_setor.Status == "Feito"]),
             text="Projetos Concluídos",
             styles={
