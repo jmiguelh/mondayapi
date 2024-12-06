@@ -178,7 +178,7 @@ def inserir_comentario(
                 id_projeto=id_projeto,
                 autor=autor,
                 texto=texto,
-                atualizacao=datetime.strptime(atualizacao, "%Y-%m-%dT%H:%M:%S%z"),
+                atualizacao=datetime.strptime(atualizacao, "%Y-%m-%dT%H:%M:%S.%fZ"),
             )
         else:
             c.id_projeto = id_projeto
