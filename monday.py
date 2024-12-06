@@ -45,9 +45,7 @@ def carregar_projetos(apiUrl: "str", headers: "str", board: "str"):
               }
             }
         }
-    }""" % (
-        board
-    )
+    }""" % (board)
     pesquisa = {"query": query}
 
     r = requests.post(url=apiUrl, json=pesquisa, headers=headers)  # make request
@@ -128,7 +126,6 @@ def atualizar():
 
 
 def carregar_comentarios(apiUrl: "str", headers: "str"):
-
     logar("COMENTÁROS", f"Buscando comentários")
     query = """{
             updates(limit: 1000) {
@@ -187,7 +184,7 @@ def inserir_comentario(
             c.id_projeto = id_projeto
             c.autor = autor
             c.texto = texto
-            c.atualizacao = datetime.strptime(atualizacao, "%Y-%m-%dT%H:%M:%S%z")
+            c.atualizacao = datetime.strptime(atualizacao, "%Y-%m-%dT%H:%M:%S.%fZ")
 
 
 if __name__ == "__main__":
