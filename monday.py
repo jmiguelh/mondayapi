@@ -5,7 +5,7 @@ from datetime import datetime
 
 # from models.db import *
 from log.log import logar
-from models.db import db_session, Projeto, Controle, Comentario, ultima_atualzacao  # noqa: F401
+from models.db import db_session, Projeto, Controle, Comentario, ultima_atualzacao
 
 
 def carregar():
