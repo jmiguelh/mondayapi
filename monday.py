@@ -1,11 +1,11 @@
+from datetime import datetime
 import os
 import requests
-from dotenv import load_dotenv
-from datetime import datetime
 
-# from models.db import *
+from dotenv import load_dotenv
+
 from log.log import logar
-from models.db import db_session, Projeto, Controle, Comentario, ultima_atualzacao
+from models.db import db_session, Projeto, Controle, Comentario, ultima_atualzacao  # noqa: F401
 
 
 def carregar():
