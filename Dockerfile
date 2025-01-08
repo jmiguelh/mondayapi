@@ -4,7 +4,8 @@ FROM python:3.12-slim
 # Configurar variáveis de ambiente para Python
 ENV PYTHONDONTWRITEBYTECODE=1 \ 
     PYTHONUNBUFFERED=1
-
+# Configurar o timezone para São Paulo
+ENV TZ=America/Sao_Paulo
 # Atualizar pacotes do sistema e instalar dependências necessárias
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
