@@ -39,6 +39,13 @@ def ultima_atualzacao() -> datetime:
     return c.atualizacao.strftime("%d/%m/%Y %H:%M:%S")
 
 
-db.bind(provider="sqlite", filename="../data/db.sqlite", create_db=True)
+db.bind(
+    provider="postgres",
+    user="monday",
+    password="monday@2024",
+    host="sf.lunelli.com.br",
+    database="monday",
+)
+# db.bind(provider="sqlite", filename="../data/db.sqlite", create_db=True)
 
 db.generate_mapping()
