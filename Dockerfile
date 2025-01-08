@@ -22,16 +22,12 @@ WORKDIR /app
 ARG GITHUB_TOKEN
 RUN git clone https://$GITHUB_TOKEN@github.com/jmiguelh/mondayapi.git /app
 
-# Instalar o Poetry
-RUN pip install --no-cache-dir poetry
+# Instalar dependências do projeto
+RUN pip3 install -r requirements.txt
 
-# Instalar dependências do projeto usando o Poetry
-RUN poetry install --no-root
-
-# Criar volume externo para a pasta /app/data
-#VOLUME ["/app/data"]
+EXPOSE 9001
 
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD curl --fail http://localhost:8501/_stcore/health || exit 1
 
 # Comando padrão para executar o aplicativo
-ENTRYPOINT ["streamlit", "run", "/app/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+ENTRYPOINT ["streamlit", "run", "/app/app.py", "--server.port=9001", "--server.address=0.0.0.0"]
