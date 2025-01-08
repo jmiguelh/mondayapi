@@ -27,7 +27,7 @@ RUN pip3 install -r requirements.txt
 
 EXPOSE 9001
 
-HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD curl --fail http://localhost:8501/_stcore/health || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD curl --fail http://localhost:9001/_stcore/health || exit 1
 
 # Comando padrão para executar o aplicativo
 ENTRYPOINT ["streamlit", "run", "/app/app.py", "--server.port=9001", "--server.address=0.0.0.0"]
