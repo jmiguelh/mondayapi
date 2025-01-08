@@ -1,4 +1,7 @@
-from pony.orm import *
+import os
+
+from dotenv import load_dotenv
+from pony.orm import Database, db_session
 import pandas as pd
 
 
@@ -28,6 +31,15 @@ def carregar_projetos() -> pd.DataFrame:
     return df
 
 
-db.bind(provider="sqlite", filename="../data/db.sqlite", create_db=True)
+load_dotenv()
+
+db.bind(
+    provider="postgres",
+    user=os.getenv("POSTGRESQL_USR"),
+    password=os.getenv("POSTGRESQL_PWD"),
+    host="sf.lunelli.com.br",
+    database="monday",
+)
+# db.bind(provider="sqlite", filename="../data/db.sqlite", create_db=True)
 
 db.generate_mapping(create_tables=True)
