@@ -1,4 +1,7 @@
+import os
 from datetime import datetime
+
+from dotenv import load_dotenv
 from pony.orm import Database, Optional, PrimaryKey, Required, db_session
 
 
@@ -39,10 +42,12 @@ def ultima_atualzacao() -> datetime:
     return c.atualizacao.strftime("%d/%m/%Y %H:%M:%S")
 
 
+load_dotenv()
+
 db.bind(
     provider="postgres",
-    user="monday",
-    password="monday@2024",
+    user=os.getenv("POSTGRESQL_USR"),
+    password=os.getenv("POSTGRESQL_PWD"),
     host="sf.lunelli.com.br",
     database="monday",
 )
