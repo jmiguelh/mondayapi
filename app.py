@@ -71,9 +71,11 @@ def monday():
     ### Filtros ###
     df = painel.carregar_projetos()
 
-    st.title("Portfólio TI - 2024")
+    st.title("Portfólio TI - 2025")
 
-    tab1, tab2, tab3, tab4 = st.tabs(["Resumo", "Segurança", "Infra", "Sistemas"])
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(
+        ["Resumo", "Segurança", "Infra", "Sistemas", "PETI Lunelli"]
+    )
 
     ### Resumo ###
     with tab1:
@@ -170,6 +172,10 @@ def monday():
     ### Sistema ###
     with tab4:
         setor = "Sistemas"
+        aba_setor(setor, df)
+    ### PETI Lunelli ###
+    with tab5:
+        setor = "PLANO ESTRATÉGICO TI E DIGITAL   - PETI LUNELLI"
         aba_setor(setor, df)
 
 

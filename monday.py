@@ -14,7 +14,7 @@ def carregar():
     apiKey = os.getenv("API_KEY")
     apiUrl = os.getenv("BASE_URL")
     headers = {"Authorization": apiKey}
-    board = "5808464075"
+    board = "8190691331"
 
     carregar_projetos(apiUrl, headers, board)
     carregar_comentarios(apiUrl, headers)

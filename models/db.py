@@ -49,8 +49,8 @@ db.bind(
     user=os.getenv("POSTGRESQL_USR"),
     password=os.getenv("POSTGRESQL_PWD"),
     host="sf.lunelli.com.br",
-    database="monday",
+    database=os.getenv("POSTGRESQL_DB"),
 )
 # db.bind(provider="sqlite", filename="../data/db.sqlite", create_db=True)
 
-db.generate_mapping()
+db.generate_mapping(create_tables=True)
