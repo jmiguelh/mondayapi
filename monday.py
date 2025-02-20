@@ -21,7 +21,7 @@ def carregar(board):
 
     if board == PORTIFOLIO:
         carregar_projetos(apiUrl, headers, board)
-        carregar_comentarios(apiUrl, headers)
+        # carregar_comentarios(apiUrl, headers)
     elif board == COE:
         carregar_coe(apiUrl, headers, board)
         # carregar_comentarios(apiUrl, headers)
@@ -38,7 +38,7 @@ def carregar_projetos(apiUrl: "str", headers: "str", board: "str"):
             title
             position
             color
-            items_page(limit: 100) {
+            items_page {
                 items {
                     id
                     name
@@ -48,6 +48,14 @@ def carregar_projetos(apiUrl: "str", headers: "str", board: "str"):
                             title
                         }
                         text
+                    }
+                    updates {
+                        id
+                        text_body
+                        updated_at
+                        creator {
+                        name
+                        }
                     }
                   }
               }
@@ -83,6 +91,21 @@ def carregar_projetos(apiUrl: "str", headers: "str", board: "str"):
                 setor,
                 atualizacao,
             )
+            for c in p["updates"]:
+                id_comentario = c["id"]
+                id_projeto = id
+                autor = c["creator"]["name"]
+                texto = c["text_body"]
+                atualizacao = c["updated_at"]
+                logar("COMENTÁROS", f"Projetos: {projeto}")
+
+                inserir_comentario(
+                    id_comentario,
+                    id_projeto,
+                    autor,
+                    texto,
+                    atualizacao,
+                )
     logar("PROJETOS", "Concluído projetos")
 
 
