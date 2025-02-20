@@ -10,21 +10,18 @@ from models.db import db_session, Projeto, Controle, Comentario, ultima_atualzac
 
 load_dotenv()
 
-PORTIFOLIO = os.getenv("BOARD_PORTFOLIO")
-COE = os.getenv("BOARD_COE")
 
-
-def carregar(board):
+def carregar():
     apiKey = os.getenv("API_KEY")
     apiUrl = os.getenv("BASE_URL")
     headers = {"Authorization": apiKey}
+    portifolio = os.getenv("BOARD_PORTFOLIO")
+    coe = os.getenv("BOARD_COE")
 
-    if board == PORTIFOLIO:
-        carregar_projetos(apiUrl, headers, board)
-        # carregar_comentarios(apiUrl, headers)
-    elif board == COE:
-        carregar_coe(apiUrl, headers, board)
-        # carregar_comentarios(apiUrl, headers)
+    carregar_projetos(apiUrl, headers, portifolio)
+    # carregar_comentarios(apiUrl, headers)
+    # carregar_coe(apiUrl, headers,coe)
+
     atualizar()
     logar("MONDAY", "Concluído")
 
@@ -243,5 +240,5 @@ def stautus_agrupado(status: "str") -> str:
 
 
 if __name__ == "__main__":
-    carregar(PORTIFOLIO)
+    carregar()
     # carregar(COE)
