@@ -73,8 +73,8 @@ def monday():
 
     st.title("Portfólio TI - 2025")
 
-    tab1, tab2, tab3, tab4, tab5 = st.tabs(
-        ["Resumo", "Segurança", "Infra", "Sistemas", "PETI Lunelli"]
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
+        ["Resumo", "Segurança", "Infra", "Sistemas", "PETI Lunelli", "COE"]
     )
 
     ### Resumo ###
@@ -135,10 +135,10 @@ def monday():
         a, b = linha.columns(2)
         a.write("Status dos Projetos")
         fig = px.pie(
-            df.groupby(["Status"]).count().reset_index(),
+            df.groupby(["Status Agrupado"]).count().reset_index(),
             values="Projeto",
-            names="Status",
-            color="Status",
+            names="Status Agrupado",
+            color="Status Agrupado",
             color_discrete_sequence=px.colors.qualitative.Set2,
         )
         fig.update_layout(
@@ -176,6 +176,10 @@ def monday():
     ### PETI Lunelli ###
     with tab5:
         setor = "PLANO ESTRATÉGICO TI E DIGITAL   - PETI LUNELLI"
+        aba_setor(setor, df)
+    ### COE ###
+    with tab5:
+        setor = "COE"
         aba_setor(setor, df)
 
 

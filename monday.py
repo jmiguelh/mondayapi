@@ -4,20 +4,27 @@ import requests
 
 from dotenv import load_dotenv
 
+from coe import carregar_coe
 from log.log import logar
 from models.db import db_session, Projeto, Controle, Comentario, ultima_atualzacao  # noqa: F401
 
+load_dotenv()
 
-def carregar():
-    load_dotenv()
+PORTIFOLIO = os.getenv("BOARD_PORTFOLIO")
+COE = os.getenv("BOARD_COE")
 
+
+def carregar(board):
     apiKey = os.getenv("API_KEY")
     apiUrl = os.getenv("BASE_URL")
     headers = {"Authorization": apiKey}
-    board = "8190691331"
 
-    carregar_projetos(apiUrl, headers, board)
-    carregar_comentarios(apiUrl, headers)
+    if board == PORTIFOLIO:
+        carregar_projetos(apiUrl, headers, board)
+        carregar_comentarios(apiUrl, headers)
+    elif board == COE:
+        carregar_coe(apiUrl, headers, board)
+        # carregar_comentarios(apiUrl, headers)
     atualizar()
     logar("MONDAY", "Concluído")
 
@@ -100,6 +107,7 @@ def inserir_projeto(
                 projeto=projeto,
                 resposaveis=resposaveis,
                 status=status,
+                status_agurpado=stautus_agrupado(status),
                 evolucao=evolucao,
                 link=link,
                 pcr=pcr,
@@ -111,6 +119,7 @@ def inserir_projeto(
             p.projeto = projeto
             p.resposaveis = resposaveis
             p.status = status
+            p.status_agurpado = stautus_agrupado(status)
             if data != "":
                 p.data = datetime.strptime(data, "%Y-%m-%d")
             p.evolucao = evolucao
@@ -188,5 +197,28 @@ def inserir_comentario(
             c.atualizacao = datetime.strptime(atualizacao, "%Y-%m-%dT%H:%M:%S.%fZ")
 
 
+def stautus_agrupado(status: "str") -> str:
+    match status:
+        case "Em progresso":
+            retorno = "Execução"
+        case "Parado":
+            retorno = "Parado"
+        case "Feito":
+            retorno = "Concluído"
+        case "Em planejamento":
+            retorno = "Execução"
+        case "Não iniciado":
+            retorno = "Não iniciado"
+        case "Em análise":
+            retorno = "Não iniciado"
+        case "Atualizar projeto":
+            retorno = "Não iniciado"
+        case "Aguardando Aprovação":
+            retorno = "Não iniciado"
+
+    return retorno
+
+
 if __name__ == "__main__":
-    carregar()
+    carregar(PORTIFOLIO)
+    # carregar(COE)

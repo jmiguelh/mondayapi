@@ -10,7 +10,7 @@ db = Database()
 
 @db_session
 def carregar_projetos() -> pd.DataFrame:
-    sql = """SELECT id, projeto, resposaveis, status, data, evolucao, link, pcr, setor
+    sql = """SELECT id, projeto, resposaveis, status, data, evolucao, link, pcr, setor, status_agurpado
             FROM projeto;"""
     result = db.select(sql)
     df = pd.DataFrame(
@@ -25,6 +25,7 @@ def carregar_projetos() -> pd.DataFrame:
             "Link",
             "PCR",
             "Setor",
+            "Status Agrupado",
         ],
     )
     df = df.set_index("id")

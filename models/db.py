@@ -20,6 +20,7 @@ class Projeto(db.Entity):
     pcr = Optional(str)
     setor = Optional(str, 100)
     atualizacao = Optional(datetime)
+    status_agurpado = Optional(str, 50)
 
 
 class Controle(db.Entity):
