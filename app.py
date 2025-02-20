@@ -293,7 +293,10 @@ def aba_coe():
 
     b.write("Robôs por Etapa")
     fig = px.bar(
-        df.groupby(["Status"]).count().reset_index(),
+        df.groupby(["Status"])
+        .count()
+        .reset_index()
+        .sort_values(by="Robô", ascending=False),
         x="Robô",
         y="Status",
         color="Status",
