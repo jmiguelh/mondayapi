@@ -19,8 +19,7 @@ def carregar():
     coe = os.getenv("BOARD_COE")
 
     carregar_projetos(apiUrl, headers, portifolio)
-    # carregar_comentarios(apiUrl, headers)
-    # carregar_coe(apiUrl, headers,coe)
+    carregar_coe(apiUrl, headers, coe)
 
     atualizar()
     logar("MONDAY", "Concluído")
@@ -155,44 +154,6 @@ def atualizar():
         c.atualizacao = datetime.now()
 
 
-def carregar_comentarios(apiUrl: "str", headers: "str"):
-    logar("COMENTÁROS", "Buscando comentários")
-    query = """{
-            updates(limit: 1000) {
-                id
-                item_id
-                creator {
-                name
-                }
-                text_body
-                created_at
-            }
-        }"""
-    pesquisa = {"query": query}
-
-    r = requests.post(url=apiUrl, json=pesquisa, headers=headers)  # make request
-
-    for c in r.json()["data"]["updates"]:
-        id = c["id"]
-        id_projeto = c["item_id"]
-        autor = c["creator"]["name"]
-        texto = c["text_body"]
-        atualizacao = c["created_at"]
-        with db_session(optimistic=False):
-            p = Projeto.get(id=id_projeto)
-            if p is not None:
-                logar("COMENTÁROS", f"Projetos: {p.projeto}")
-
-                inserir_comentario(
-                    id,
-                    id_projeto,
-                    autor,
-                    texto,
-                    atualizacao,
-                )
-    logar("COMENTÁROS", "Concluído comentários")
-
-
 def inserir_comentario(
     id: "str",
     id_projeto: "str",
@@ -241,4 +202,3 @@ def stautus_agrupado(status: "str") -> str:
 
 if __name__ == "__main__":
     carregar()
-    # carregar(COE)

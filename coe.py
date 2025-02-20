@@ -1,7 +1,7 @@
 from datetime import datetime
 import requests
 
-from models.db import db_session, Projeto
+from models.db import db_session, Robo
 from log.log import logar
 
 
@@ -36,69 +36,68 @@ def carregar_coe(apiUrl: "str", headers: "str", board: "str"):
 
     setor = "COE"
     for s in r.json()["data"]["boards"][0]["groups"]:
-        status = s["title"]
+        status_agurpado = s["title"]
         for p in s["items_page"]["items"]:
-            if p["column_values"][11]["text"] == "2025":
-                id = p["id"]
-                projeto = p["name"]
-                resposaveis = p["column_values"][1]["text"]
-                # status = p["column_values"][3]["text"]
-                # fte = p["column_values"][4]["text"]
-                # link = p["column_values"][5]["text"]
-                # pcr = p["column_values"][6]["text"]
-                atualizacao = p["updated_at"]
-                logar("ROBÔ", f"Robô: {projeto}")
-                inserir_projeto(
-                    id,
-                    projeto,
-                    resposaveis,
-                    status,
-                    "",
-                    0,
-                    "",
-                    "",
-                    setor,
-                    atualizacao,
-                )
+            id = p["id"]
+            robo = p["name"]
+            resposaveis = p["column_values"][1]["text"]
+            status = p["column_values"][3]["text"]
+            fte = p["column_values"][4]["text"]
+            evolucao = ""
+            ano = p["column_values"][11]["text"]
+            atualizacao = p["updated_at"]
+            logar("ROBÔ", f"Robô: {robo}")
+            inserir_robo(
+                id,
+                robo,
+                resposaveis,
+                status_agurpado,
+                status,
+                fte if fte != "" else 0,
+                evolucao,
+                setor,
+                ano,
+                atualizacao,
+            )
     logar("ROBÔ", "Concluído robôs")
 
 
-def inserir_projeto(
+def inserir_robo(
     id: "str",
-    projeto: "str",
+    robo: "str",
     resposaveis: "str",
+    status_agurpado: "str",
     status: "str",
-    data: "str",
+    fte: "float",
     evolucao: "int",
-    link: "str",
-    pcr: "str",
     setor: "str",
+    ano: "int",
     atualizacao: "str",
 ):
     with db_session(optimistic=False):
-        p = Projeto.get(id=id)
+        p = Robo.get(id=id)
         if p is None:
-            logar("ROBÔ", f"Robô incluído: {projeto}")
-            Projeto(
+            logar("ROBÔ", f"Robô incluído: {robo}")
+            Robo(
                 id=id,
-                projeto=projeto,
+                robo=robo,
                 resposaveis=resposaveis,
+                status_agurpado=status_agurpado,
                 status=status,
+                fte=fte,
                 evolucao=evolucao,
-                link=link,
-                pcr=pcr,
                 setor=setor,
+                ano=ano,
                 atualizacao=datetime.strptime(atualizacao, "%Y-%m-%dT%H:%M:%S%z"),
             )
         else:
-            logar("PROJETO", f"Projeto alterado: {projeto}")
-            p.projeto = projeto
+            logar("ROBO", f"Robô alterado: {robo}")
+            p.robo = robo
             p.resposaveis = resposaveis
+            p.status_agurpado = status_agurpado
             p.status = status
-            if data != "":
-                p.data = datetime.strptime(data, "%Y-%m-%d")
+            p.fte = fte
             p.evolucao = evolucao
-            p.link = link
-            p.pcr = pcr
             p.setor = setor
+            p.ano = ano
             p.atualizacao = datetime.strptime(atualizacao, "%Y-%m-%dT%H:%M:%S%z")
