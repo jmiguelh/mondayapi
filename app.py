@@ -74,113 +74,118 @@ def monday():
     st.title("Portfólio TI - 2025")
 
     tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
-        ["Resumo", "Segurança", "Infra", "Sistemas", "PETI Lunelli", "COE"]
+        ["Resumo", "COE", "Infra", "Segurança", "Sistemas", "PETI Lunelli"]
     )
 
     ### Resumo ###
     with tab1:
-        linha = st.container()
-        a, b = linha.columns(2)
-        a1, a2 = a.columns(2)
-        with a1:
-            card(
-                title=len(df),
-                text="Total de projetos",
-                styles={
-                    "card": {
-                        "width": "200px",
-                        "height": "200px",
-                        "background-color": "LightGreen",
-                    }
-                },
-                key=random.randint(1, 5000),
-            )
-        with a2:
-            card(
-                title=str(len(df.loc[df.Status == "Feito"])),
-                text="Projetos Concluídos",
-                styles={
-                    "card": {
-                        "width": "200px",
-                        "height": "200px",
-                        "background-color": "LightSalmon",
-                    }
-                },
-                key=random.randint(1, 5000),
-            )
+        aba_resumo(df)
 
-        b.write("Projetos por Setor")
-        fig = px.bar(
-            df.groupby(["Setor"]).count().reset_index(),
-            x="Projeto",
-            y="Setor",
-            color="Setor",
-            text_auto=True,
-            color_discrete_map=COLOR_DISCRETE_MAP,
-            orientation="h",
-        )
-        fig.update_layout(
-            legend=dict(
-                orientation="h",
-                entrywidth=70,
-                yanchor="bottom",
-                y=1.02,
-                xanchor="right",
-                x=1,
-            )
-        )
-        b.plotly_chart(fig, use_container_width=True)
-
-        linha = st.container()
-        a, b = linha.columns(2)
-        a.write("Status dos Projetos")
-        fig = px.pie(
-            df.groupby(["Status Agrupado"]).count().reset_index(),
-            values="Projeto",
-            names="Status Agrupado",
-            color="Status Agrupado",
-            color_discrete_sequence=px.colors.qualitative.Set2,
-        )
-        fig.update_layout(
-            legend=dict(
-                orientation="h",
-                entrywidth=70,
-                yanchor="bottom",
-                y=1.02,
-                xanchor="right",
-                x=1,
-            )
-        )
-        a.plotly_chart(fig, use_container_width=True)
-
-        b.write("Projetos PCR")
-        b.dataframe(
-            df.loc[df.PCR == "Sim"][["Projeto", "Setor", "% Evolução"]],
-            use_container_width=True,
-            hide_index=True,
-        )
-
-    ### Segurança ###
+    ### COE ###
     with tab2:
-        setor = "Segurança"
-        aba_setor(setor, df)
+        aba_coe()
 
     ### Infra ###
     with tab3:
         setor = "Infra"
         aba_setor(setor, df)
-    ### Sistema ###
+
+    ### Segurança ###
     with tab4:
+        setor = "Segurança"
+        aba_setor(setor, df)
+
+    ### Sistema ###
+    with tab5:
         setor = "Sistemas"
         aba_setor(setor, df)
     ### PETI Lunelli ###
-    with tab5:
-        setor = "PLANO ESTRATÉGICO TI E DIGITAL   - PETI LUNELLI"
+    with tab6:
+        setor = "PETI LUNELLI"
         aba_setor(setor, df)
-    ### COE ###
-    with tab5:
-        setor = "COE"
-        aba_setor(setor, df)
+
+
+def aba_resumo(df):
+    linha = st.container()
+    a, b = linha.columns(2)
+    a1, a2 = a.columns(2)
+    with a1:
+        card(
+            title=len(df),
+            text="Total de projetos",
+            styles={
+                "card": {
+                    "width": "200px",
+                    "height": "200px",
+                    "background-color": "LightGreen",
+                }
+            },
+            key=random.randint(1, 5000),
+        )
+    with a2:
+        card(
+            title=str(len(df.loc[df.Status == "Feito"])),
+            text="Projetos Concluídos",
+            styles={
+                "card": {
+                    "width": "200px",
+                    "height": "200px",
+                    "background-color": "LightSalmon",
+                }
+            },
+            key=random.randint(1, 5000),
+        )
+
+    b.write("Projetos por Setor")
+    fig = px.bar(
+        df.groupby(["Setor"]).count().reset_index(),
+        x="Projeto",
+        y="Setor",
+        color="Setor",
+        text_auto=True,
+        color_discrete_map=COLOR_DISCRETE_MAP,
+        orientation="h",
+    )
+    fig.update_layout(
+        legend=dict(
+            orientation="h",
+            entrywidth=70,
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1,
+        )
+    )
+    b.plotly_chart(fig, use_container_width=True)
+
+    linha = st.container()
+    a, b = linha.columns(2)
+    a.write("Status dos Projetos")
+    fig = px.pie(
+        df.groupby(["Status Agrupado"]).count().reset_index(),
+        values="Projeto",
+        names="Status Agrupado",
+        color="Status Agrupado",
+        color_discrete_sequence=px.colors.qualitative.Set2,
+    )
+    fig.update_layout(
+        legend=dict(
+            orientation="h",
+            entrywidth=70,
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1,
+        )
+    )
+    a.plotly_chart(fig, use_container_width=True)
+
+    b.write("Projetos PCR")
+    b.dataframe(
+        df.loc[df.PCR == "Sim"][["Projeto", "Setor", "% Evolução"]],
+        use_container_width=True,
+        hide_index=True,
+    )
 
 
 def aba_setor(setor, df):
@@ -247,6 +252,88 @@ def aba_setor(setor, df):
         use_container_width=True,
         hide_index=True,
     )
+
+
+def aba_coe():
+    df_total = painel.carregar_robos()
+    df = df_total.loc[df_total.Ano == 2025]
+    linha = st.container()
+    a, b = linha.columns(2)
+    a1, a2 = a.columns(2)
+    with a1:
+        card(
+            title=len(df),
+            text="Total de robôs",
+            styles={
+                "card": {
+                    "width": "200px",
+                    "height": "200px",
+                    "background-color": "LightGreen",
+                }
+            },
+            key=random.randint(1, 5000),
+        )
+    with a2:
+        card(
+            title=str(
+                round(
+                    (df_total.loc[df_total.Status == "Feito"]["FTE/Horas Mês"].sum()), 2
+                )
+            ),
+            text="Robôs Concluídos em FTE/Horas Mês",
+            styles={
+                "card": {
+                    "width": "200px",
+                    "height": "200px",
+                    "background-color": "LightSalmon",
+                }
+            },
+            key=random.randint(1, 5000),
+        )
+
+    b.write("Robôs por Etapa")
+    fig = px.bar(
+        df.groupby(["Status"]).count().reset_index(),
+        x="Robô",
+        y="Status",
+        color="Status",
+        text_auto=True,
+        color_discrete_map=COLOR_DISCRETE_MAP,
+        orientation="h",
+    )
+    fig.update_layout(
+        legend=dict(
+            orientation="h",
+            entrywidth=70,
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1,
+        )
+    )
+    b.plotly_chart(fig, use_container_width=True)
+
+    linha = st.container()
+    a, b = linha.columns(2)
+    a.write("Status dos Robôs")
+    fig = px.pie(
+        df.groupby(["Status Agrupado"]).count().reset_index(),
+        values="Robô",
+        names="Status Agrupado",
+        color="Status Agrupado",
+        color_discrete_sequence=px.colors.qualitative.Set2,
+    )
+    fig.update_layout(
+        legend=dict(
+            orientation="h",
+            entrywidth=70,
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1,
+        )
+    )
+    a.plotly_chart(fig, use_container_width=True)
 
 
 if __name__ == "__main__":

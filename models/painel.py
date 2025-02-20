@@ -32,6 +32,30 @@ def carregar_projetos() -> pd.DataFrame:
     return df
 
 
+@db_session
+def carregar_robos() -> pd.DataFrame:
+    sql = """SELECT id, robo, resposaveis, status_agurpado, status, fte, 
+                evolucao, setor, ano
+            FROM public.robo;"""
+    result = db.select(sql)
+    df = pd.DataFrame(
+        result,
+        columns=[
+            "id",
+            "Robô",
+            "Resposaveis",
+            "Status Agrupado",
+            "Status",
+            "FTE/Horas Mês",
+            "% Evolução",
+            "Setor",
+            "Ano",
+        ],
+    )
+    df = df.set_index("id")
+    return df
+
+
 load_dotenv()
 
 db.bind(

@@ -63,7 +63,7 @@ def carregar_projetos(apiUrl: "str", headers: "str", board: "str"):
     r = requests.post(url=apiUrl, json=pesquisa, headers=headers)  # make request
 
     for s in r.json()["data"]["boards"][0]["groups"]:
-        setor = s["title"]
+        setor = s["title"].replace("PLANO ESTRATÉGICO TI E DIGITAL   - ", "")
         for p in s["items_page"]["items"]:
             id = p["id"]
             projeto = p["name"]
