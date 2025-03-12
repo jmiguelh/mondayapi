@@ -4,13 +4,18 @@ from dotenv import load_dotenv
 from pony.orm import Database, db_session
 import pandas as pd
 
-
 db = Database()
+
+load_dotenv()
 
 
 @db_session
 def carregar_projetos() -> pd.DataFrame:
-    sql = """SELECT id, projeto, resposaveis, status, data, evolucao, link, pcr, setor, status_agurpado
+    portifolio = os.getenv("BOARD_PORTFOLIO")
+    sql = f"""SELECT id, projeto, resposaveis, status, data,
+                evolucao, replace(link,'Projeto - ','') as link, 
+                pcr, setor, status_agurpado, 
+                'https://lunelli-pmo.monday.com/boards/{portifolio}/pulses/'||id as cometarios
             FROM projeto;"""
     result = db.select(sql)
     df = pd.DataFrame(
@@ -26,6 +31,7 @@ def carregar_projetos() -> pd.DataFrame:
             "PCR",
             "Setor",
             "Status Agrupado",
+            "Comentários",
         ],
     )
     df = df.set_index("id")
@@ -55,8 +61,6 @@ def carregar_robos() -> pd.DataFrame:
     df = df.set_index("id")
     return df
 
-
-load_dotenv()
 
 db.bind(
     provider="postgres",
