@@ -8,7 +8,10 @@ import random
 from monday import ultima_atualzacao, carregar
 import models.painel as painel
 
-COLOR_DISCRETE_MAP = {"Segurança": "olive", "Infra": "orange", "Sistemas": "royalblue"}
+COLOR_CARD1 = "#3FDDE8"
+COLOR_CARD2 = "#3FE881"
+COLOR_DISCRETE_MAP = {"Segurança": "#44EB74", "Infra": "#EBC744", "Sistemas": "#4452EB", "PETI LUNELLI": "#EB4444"}
+COLOR_STATUS = {"Parado": "#EB1F13", "Execução": "#1613EB", "Não iniciado": "#EBC513", "Concluído": "#13EB68"}
 
 
 def barra_lateral():
@@ -117,7 +120,7 @@ def aba_resumo(df):
                 "card": {
                     "width": "200px",
                     "height": "200px",
-                    "background-color": "LightGreen",
+                    "background-color": COLOR_CARD1,
                 }
             },
             key=random.randint(1, 5000),
@@ -130,7 +133,7 @@ def aba_resumo(df):
                 "card": {
                     "width": "200px",
                     "height": "200px",
-                    "background-color": "LightSalmon",
+                    "background-color": COLOR_CARD2,
                 }
             },
             key=random.randint(1, 5000),
@@ -166,7 +169,7 @@ def aba_resumo(df):
         values="Projeto",
         names="Status Agrupado",
         color="Status Agrupado",
-        color_discrete_sequence=px.colors.qualitative.Set2,
+        color_discrete_map=COLOR_STATUS,
     )
     fig.update_layout(
         legend=dict(
@@ -201,7 +204,7 @@ def aba_setor(setor, df):
                 "card": {
                     "width": "200px",
                     "height": "200px",
-                    "background-color": "LightGreen",
+                    "background-color": COLOR_CARD1,
                 }
             },
             key=random.randint(1, 5000),
@@ -214,7 +217,7 @@ def aba_setor(setor, df):
                 "card": {
                     "width": "200px",
                     "height": "200px",
-                    "background-color": "LightSalmon",
+                    "background-color": COLOR_CARD2,
                 }
             },
             key=random.randint(1, 5000),
@@ -222,12 +225,12 @@ def aba_setor(setor, df):
 
     b.write("Projetos por Status")
     fig = px.bar(
-        df_setor.groupby(["Status"]).count().reset_index(),
+        df_setor.groupby(["Status Agrupado"]).count().reset_index(),
         x="Projeto",
-        y="Status",
-        color="Status",
+        y="Status Agrupado",
+        color="Status Agrupado",
         text_auto=True,
-        color_discrete_sequence=px.colors.qualitative.Set2,
+        color_discrete_map=COLOR_STATUS,
         orientation="h",
     )
     fig.update_layout(
