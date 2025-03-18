@@ -6,7 +6,12 @@ from dotenv import load_dotenv
 
 from coe import carregar_coe
 from log.log import logar
-from models.db import db_session, Projeto, Controle, Comentario, ultima_atualzacao  # noqa: F401
+from models.db import (
+    db_session,
+    Projeto,
+    Controle,
+    Comentario,
+)  # noqa: F401
 
 load_dotenv()
 
@@ -57,7 +62,9 @@ def carregar_projetos(apiUrl: "str", headers: "str", board: "str"):
               }
             }
         }
-    }""" % (board)
+    }""" % (
+        board
+    )
     pesquisa = {"query": query}
 
     r = requests.post(url=apiUrl, json=pesquisa, headers=headers)  # make request
@@ -74,6 +81,11 @@ def carregar_projetos(apiUrl: "str", headers: "str", board: "str"):
             link = p["column_values"][5]["text"]
             pcr = p["column_values"][6]["text"]
             atualizacao = p["updated_at"]
+            diretor_responsavel = (
+                p["column_values"][7]["text"]
+                if p["column_values"][7]["text"] is not None
+                else ""
+            )
             logar("PROJETOS", f"Projetos: {projeto}")
             inserir_projeto(
                 id,
@@ -86,6 +98,7 @@ def carregar_projetos(apiUrl: "str", headers: "str", board: "str"):
                 pcr,
                 setor,
                 atualizacao,
+                diretor_responsavel,
             )
             for c in p["updates"]:
                 id_comentario = c["id"]
@@ -116,6 +129,7 @@ def inserir_projeto(
     pcr: "str",
     setor: "str",
     atualizacao: "str",
+    diretor_responsavel: "str",
 ):
     with db_session(optimistic=False):
         p = Projeto.get(id=id)
@@ -132,6 +146,7 @@ def inserir_projeto(
                 pcr=pcr,
                 setor=setor,
                 atualizacao=datetime.strptime(atualizacao, "%Y-%m-%dT%H:%M:%S%z"),
+                diretor_responsavel=diretor_responsavel,
             )
         else:
             logar("PROJETO", f"Projeto alterado: {projeto}")
@@ -146,6 +161,7 @@ def inserir_projeto(
             p.pcr = pcr
             p.setor = setor
             p.atualizacao = datetime.strptime(atualizacao, "%Y-%m-%dT%H:%M:%S%z")
+            p.diretor_responsavel = diretor_responsavel
 
 
 def atualizar():

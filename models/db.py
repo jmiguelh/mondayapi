@@ -21,6 +21,7 @@ class Projeto(db.Entity):
     setor = Optional(str, 100)
     atualizacao = Optional(datetime)
     status_agurpado = Optional(str, 50)
+    diretor_responsavel = Optional(str)
 
 
 class Controle(db.Entity):
