@@ -274,7 +274,16 @@ def aba_setor(setor, df):
         ],
         use_container_width=True,
         hide_index=True,
-        column_config={"Comentários": st.column_config.LinkColumn(display_text="➡️")},
+        column_config={
+            "Comentários": st.column_config.LinkColumn(display_text="➡️"),
+            "% Evolução": st.column_config.ProgressColumn(
+                "% Evolução",
+                help="% Evolução",
+                format="%f",
+                min_value=0,
+                max_value=100,
+            ),
+        },
     )
 
 
