@@ -5,13 +5,24 @@ from streamlit_card import card
 import plotly.express as px
 import time
 import random
-from monday import ultima_atualzacao, carregar
+from monday import carregar
+from models.db import ultima_atualzacao
 import models.painel as painel
 
 COLOR_CARD1 = "#3FDDE8"
 COLOR_CARD2 = "#3FE881"
-COLOR_DISCRETE_MAP = {"Segurança": "#44EB74", "Infra": "#EBC744", "Sistemas": "#4452EB", "PETI LUNELLI": "#EB4444"}
-COLOR_STATUS = {"Parado": "#EB1F13", "Execução": "#1613EB", "Não iniciado": "#EBC513", "Concluído": "#13EB68"}
+COLOR_DISCRETE_MAP = {
+    "Segurança": "#44EB74",
+    "Infra": "#EBC744",
+    "Sistemas": "#4452EB",
+    "PETI LUNELLI": "#EB4444",
+}
+COLOR_STATUS = {
+    "Parado": "#EB1F13",
+    "Execução": "#1613EB",
+    "Não iniciado": "#EBC513",
+    "Concluído": "#13EB68",
+}
 
 
 def barra_lateral():
@@ -254,8 +265,7 @@ def aba_setor(setor, df):
         df_setor[["Projeto", "Resposaveis", "% Evolução", "Status", "Comentários"]],
         use_container_width=True,
         hide_index=True,
-        column_config={"Comentários": st.column_config.LinkColumn(
-            display_text="➡️")},
+        column_config={"Comentários": st.column_config.LinkColumn(display_text="➡️")},
     )
 
 
