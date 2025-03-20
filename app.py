@@ -262,7 +262,16 @@ def aba_setor(setor, df):
         ascending=[False],
     )
     st.dataframe(
-        df_setor[["Projeto", "Resposaveis", "% Evolução", "Status", "Comentários"]],
+        df_setor[
+            [
+                "Projeto",
+                "Resposaveis",
+                "% Evolução",
+                "Status",
+                "Comentários",
+                "Diretor Responsável",
+            ]
+        ],
         use_container_width=True,
         hide_index=True,
         column_config={"Comentários": st.column_config.LinkColumn(display_text="➡️")},
