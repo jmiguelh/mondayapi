@@ -12,16 +12,16 @@ import models.painel as painel
 COLOR_CARD1 = "#3FDDE8"
 COLOR_CARD2 = "#3FE881"
 COLOR_DISCRETE_MAP = {
-    "Segurança": "#44EB74",
-    "Infra": "#EBC744",
-    "Sistemas": "#4452EB",
-    "PETI LUNELLI": "#EB4444",
+    "Segurança": "#73681F",
+    "Infra": "#731F51",
+    "Sistemas": "#1F6D73",
+    "PETI LUNELLI": "#79C2C8",
 }
 COLOR_STATUS = {
-    "Parado": "#EB1F13",
-    "Execução": "#1613EB",
-    "Não iniciado": "#EBC513",
-    "Concluído": "#13EB68",
+    "Parado": "#EB4444",
+    "Execução": "#4452EB",
+    "Não iniciado": "#EBC744",
+    "Concluído": "#44EB74",
 }
 COLOR_MONDAY = {
     "Em progresso": "#9cd326",
