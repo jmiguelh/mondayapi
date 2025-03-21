@@ -23,6 +23,17 @@ COLOR_STATUS = {
     "Não iniciado": "#EBC513",
     "Concluído": "#13EB68",
 }
+COLOR_MONDAY = {
+    "Em progresso": "#9cd326",
+    "Feito": "#00c875",
+    "Parado": "#df2f4a",
+    "Aguardando Aprovação": "#ffcb00",
+    "Cancelado": "#e484bd",
+    "Atualizar projeto": "#c4c4c4",
+    "Em planejamento": "#579bfc",
+    "Não iniciado": "#a9bee8",
+    "Em análise": "#5559df",
+}
 
 
 def barra_lateral():
