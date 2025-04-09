@@ -48,8 +48,9 @@ def barra_lateral():
                 st.success("Sucesso! Repocessando...")
                 time.sleep(3)
                 st.rerun()
-
         st.write("")
+        st.write("")
+        st.image("img/monday_logo.png", width=250)
 
 
 def colorir_linha(row):
