@@ -24,7 +24,7 @@ def carregar():
     coe = os.getenv("BOARD_COE")
 
     carregar_projetos(apiUrl, headers, portifolio)
-    # carregar_coe(apiUrl, headers, coe)
+    carregar_coe(apiUrl, headers, coe)
 
     atualizar()
     logar("MONDAY", "Concluído")

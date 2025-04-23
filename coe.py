@@ -29,7 +29,9 @@ def carregar_coe(apiUrl: "str", headers: "str", board: "str"):
               }
             }
         }
-    }""" % (board)
+    }""" % (
+        board
+    )
     pesquisa = {"query": query}
 
     r = requests.post(url=apiUrl, json=pesquisa, headers=headers)  # make request
@@ -44,7 +46,7 @@ def carregar_coe(apiUrl: "str", headers: "str", board: "str"):
             status = p["column_values"][3]["text"]
             fte = p["column_values"][4]["text"]
             evolucao = ""
-            ano = p["column_values"][11]["text"]
+            ano = p["column_values"][12]["text"]
             atualizacao = p["updated_at"]
             logar("ROBÔ", f"Robô: {robo}")
             inserir_robo(
