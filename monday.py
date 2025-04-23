@@ -24,7 +24,7 @@ def carregar():
     coe = os.getenv("BOARD_COE")
 
     carregar_projetos(apiUrl, headers, portifolio)
-    carregar_coe(apiUrl, headers, coe)
+    # carregar_coe(apiUrl, headers, coe)
 
     atualizar()
     logar("MONDAY", "Concluído")
@@ -35,11 +35,8 @@ def carregar_projetos(apiUrl: "str", headers: "str", board: "str"):
     query = """{
     boards(ids: %s) {
         groups {
-            id
             title
-            position
-            color
-            items_page {
+            items_page(limit:50) {
                 items {
                     id
                     name
@@ -203,6 +200,8 @@ def stautus_agrupado(status: "str") -> str:
         case "Feito":
             retorno = "Concluído"
         case "Em planejamento":
+            retorno = "Execução"
+        case "Em validação":
             retorno = "Execução"
         case "Não iniciado":
             retorno = "Não iniciado"
