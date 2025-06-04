@@ -172,16 +172,8 @@ def aba_resumo(df):
         color_discrete_map=COLOR_DISCRETE_MAP,
         orientation="h",
     )
-    fig.update_layout(
-        legend=dict(
-            orientation="h",
-            entrywidth=70,
-            yanchor="bottom",
-            y=1.02,
-            xanchor="right",
-            x=1,
-        )
-    )
+    fig.update_layout(showlegend=False)
+
     b.plotly_chart(fig, use_container_width=True)
 
     linha = st.container()
@@ -256,16 +248,8 @@ def aba_setor(setor, df):
         color_discrete_map=COLOR_STATUS,
         orientation="h",
     )
-    fig.update_layout(
-        legend=dict(
-            orientation="h",
-            entrywidth=70,
-            yanchor="bottom",
-            y=1.02,
-            xanchor="right",
-            x=1,
-        )
-    )
+    fig.update_layout(showlegend=False)
+
     b.plotly_chart(fig, use_container_width=True)
 
     st.write("Projetos")
