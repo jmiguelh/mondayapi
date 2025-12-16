@@ -137,7 +137,7 @@ def aba_resumo(df):
     a1, a2 = a.columns(2)
     with a1:
         card(
-            title=len(df),
+            title=str(len(df)),
             text="Total de projetos",
             styles={
                 "card": {
@@ -146,7 +146,7 @@ def aba_resumo(df):
                     "background-color": COLOR_CARD1,
                 }
             },
-            key=random.randint(1, 5000),
+            key=str(random.randint(1, 5000)),
         )
     with a2:
         card(
@@ -159,7 +159,7 @@ def aba_resumo(df):
                     "background-color": COLOR_CARD2,
                 }
             },
-            key=random.randint(1, 5000),
+            key=str(random.randint(1, 5000)),
         )
 
     b.write("Projetos por Setor")
@@ -174,7 +174,7 @@ def aba_resumo(df):
     )
     fig.update_layout(showlegend=False)
 
-    b.plotly_chart(fig, use_container_width=True)
+    b.plotly_chart(fig, width="stretch")
 
     linha = st.container()
     a, b = linha.columns(2)
@@ -196,12 +196,12 @@ def aba_resumo(df):
             x=1,
         )
     )
-    a.plotly_chart(fig, use_container_width=True)
+    a.plotly_chart(fig, width="stretch")
 
     b.write("Projetos PCR")
     b.dataframe(
         df.loc[df.PCR == "Sim"][["Projeto", "Setor", "% Evolução"]],
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
     )
 
@@ -213,7 +213,7 @@ def aba_setor(setor, df):
     a1, a2 = a.columns(2)
     with a1:
         card(
-            title=len(df_setor),
+            title=str(len(df_setor)),
             text="Total de projetos",
             styles={
                 "card": {
@@ -222,11 +222,11 @@ def aba_setor(setor, df):
                     "background-color": COLOR_CARD1,
                 }
             },
-            key=random.randint(1, 5000),
+            key=str(random.randint(1, 5000)),
         )
     with a2:
         card(
-            title=len(df_setor.loc[df_setor.Status == "Feito"]),
+            title=str(len(df_setor.loc[df_setor.Status == "Feito"])),
             text="Projetos Concluídos",
             styles={
                 "card": {
@@ -235,7 +235,7 @@ def aba_setor(setor, df):
                     "background-color": COLOR_CARD2,
                 }
             },
-            key=random.randint(1, 5000),
+            key=str(random.randint(1, 5000)),
         )
 
     b.write("Projetos por Status")
@@ -250,7 +250,7 @@ def aba_setor(setor, df):
     )
     fig.update_layout(showlegend=False)
 
-    b.plotly_chart(fig, use_container_width=True)
+    b.plotly_chart(fig, width="stretch")
 
     st.write("Projetos")
     df_setor = df_setor.sort_values(
@@ -268,7 +268,7 @@ def aba_setor(setor, df):
                 "Diretor Responsável",
             ]
         ],
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
         column_config={
             "Comentários": st.column_config.LinkColumn(display_text="➡️"),
@@ -291,7 +291,7 @@ def aba_coe():
     a1, a2 = a.columns(2)
     with a1:
         card(
-            title=len(df),
+            title=str(len(df)),
             text="Total de robôs",
             styles={
                 "card": {
@@ -300,7 +300,7 @@ def aba_coe():
                     "background-color": "LightGreen",
                 }
             },
-            key=random.randint(1, 5000),
+            key=str(random.randint(1, 5000)),
         )
     with a2:
         card(
@@ -317,7 +317,7 @@ def aba_coe():
                     "background-color": "LightSalmon",
                 }
             },
-            key=random.randint(1, 5000),
+            key=str(random.randint(1, 5000)),
         )
 
     b.write("Robôs por Etapa")
@@ -335,7 +335,7 @@ def aba_coe():
     )
     fig.update_layout(showlegend=False)
 
-    b.plotly_chart(fig, use_container_width=True)
+    b.plotly_chart(fig, width="stretch")
 
     linha = st.container()
     a, b = linha.columns(2)
@@ -357,7 +357,7 @@ def aba_coe():
             x=1,
         )
     )
-    a.plotly_chart(fig, use_container_width=True)
+    a.plotly_chart(fig, width="stretch")
 
 
 if __name__ == "__main__":
