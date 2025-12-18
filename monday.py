@@ -76,11 +76,16 @@ def carregar_projetos(apiUrl: "str", headers: "str", board: "str"):
             data = p["column_values"][3]["text"]
             evolucao = p["column_values"][4]["text"]
             link = p["column_values"][5]["text"]
-            pcr = p["column_values"][6]["text"]
+            equipe = (
+                p["column_values"][6]["text"]
+                if p["column_values"][6]["text"] is not None
+                else ""
+            )
+            pcr = p["column_values"][7]["text"]
             atualizacao = p["updated_at"]
             diretor_responsavel = (
-                p["column_values"][7]["text"]
-                if p["column_values"][7]["text"] is not None
+                p["column_values"][8]["text"]
+                if p["column_values"][8]["text"] is not None
                 else ""
             )
             logar("PROJETOS", f"Projetos: {projeto}")
@@ -96,6 +101,7 @@ def carregar_projetos(apiUrl: "str", headers: "str", board: "str"):
                 setor,
                 atualizacao,
                 diretor_responsavel,
+                equipe,
             )
             for c in p["updates"]:
                 id_comentario = c["id"]
@@ -127,6 +133,7 @@ def inserir_projeto(
     setor: "str",
     atualizacao: "str",
     diretor_responsavel: "str",
+    equipe: "str",
 ):
     with db_session(optimistic=False):
         p = Projeto.get(id=id)
@@ -144,6 +151,7 @@ def inserir_projeto(
                 setor=setor,
                 atualizacao=datetime.strptime(atualizacao, "%Y-%m-%dT%H:%M:%S%z"),
                 diretor_responsavel=diretor_responsavel,
+                equipe=equipe,
             )
         else:
             logar("PROJETO", f"Projeto alterado: {projeto}")
@@ -159,6 +167,7 @@ def inserir_projeto(
             p.setor = setor
             p.atualizacao = datetime.strptime(atualizacao, "%Y-%m-%dT%H:%M:%S%z")
             p.diretor_responsavel = diretor_responsavel
+            p.equipe = equipe
 
 
 def atualizar():
