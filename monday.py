@@ -17,17 +17,22 @@ load_dotenv()
 
 
 def carregar():
-    apiKey = os.getenv("API_KEY")
-    apiUrl = os.getenv("BASE_URL")
-    headers = {"Authorization": apiKey}
-    portifolio = os.getenv("BOARD_PORTFOLIO")
-    coe = os.getenv("BOARD_COE")
+    apiUrl, headers, portifolio, coe = parametros()
 
     carregar_projetos(apiUrl, headers, portifolio)
     carregar_coe(apiUrl, headers, coe)
 
     atualizar()
     logar("MONDAY", "Concluído")
+
+
+def parametros():
+    apiKey = os.getenv("API_KEY")
+    apiUrl = os.getenv("BASE_URL")
+    headers = {"Authorization": apiKey}
+    portifolio = os.getenv("BOARD_PORTFOLIO")
+    coe = os.getenv("BOARD_COE")
+    return apiUrl, headers, portifolio, coe
 
 
 def carregar_projetos(apiUrl: "str", headers: "str", board: "str"):
@@ -52,11 +57,11 @@ def carregar_projetos(apiUrl: "str", headers: "str", board: "str"):
                         text_body
                         updated_at
                         creator {
-                        name
+                            name
                         }
                     }
-                  }
-              }
+                }
+            }
             }
         }
     }""" % (
@@ -83,9 +88,10 @@ def carregar_projetos(apiUrl: "str", headers: "str", board: "str"):
             )
             pcr = p["column_values"][7]["text"]
             atualizacao = p["updated_at"]
+            data_lb = p["column_values"][8]["text"]
             diretor_responsavel = (
-                p["column_values"][8]["text"]
-                if p["column_values"][8]["text"] is not None
+                p["column_values"][9]["text"]
+                if p["column_values"][9]["text"] is not None
                 else ""
             )
             logar("PROJETOS", f"Projetos: {projeto}")
@@ -95,6 +101,7 @@ def carregar_projetos(apiUrl: "str", headers: "str", board: "str"):
                 resposaveis,
                 status,
                 data,
+                data_lb,
                 evolucao,
                 link,
                 pcr,
@@ -127,6 +134,7 @@ def inserir_projeto(
     resposaveis: "str",
     status: "str",
     data: "str",
+    data_lb: "str",
     evolucao: "int",
     link: "str",
     pcr: "str",
@@ -160,7 +168,16 @@ def inserir_projeto(
             p.status = status
             p.status_agurpado = stautus_agrupado(status)
             if data != "":
+                data_old = p.data.strftime("%Y-%m-%d") if p.data is not None else ""
+                if data != data_old:
+                    criar_comentario(
+                        id,
+                        data_old,
+                        datetime.strptime(data, "%Y-%m-%d"),
+                    )
                 p.data = datetime.strptime(data, "%Y-%m-%d")
+            if data_lb != "":
+                p.data_lb = datetime.strptime(data_lb, "%Y-%m-%d")
             p.evolucao = evolucao
             p.link = link
             p.pcr = pcr
@@ -226,6 +243,38 @@ def stautus_agrupado(status: "str") -> str:
             retorno = status
 
     return retorno
+
+
+def criar_comentario(
+    id_projeto: "str",
+    data_old: "datetime",
+    data_new: "datetime",
+):
+    apiUrl, headers, portifolio, coe = parametros()
+
+    if data_old != "":
+        comentario = f"Atualização da data de conclusão do projeto:<br>Data antiga: {data_old.strftime('%d/%m/%Y')}<br>Data nova: {data_new.strftime('%d/%m/%Y')}"
+    else:
+        comentario = f"Atualização da data de conclusão do projeto:<br>Data antiga: N/A<br>Data nova: {data_new.strftime('%d/%m/%Y')}"
+
+    query = """mutation {
+                create_update(
+                    item_id: %s
+                    body: "%s"
+                ) {
+                    id
+                    body
+                    created_at
+                }
+                }""" % (
+        id_projeto,
+        comentario,
+    )
+
+    pesquisa = {"query": query}
+    r = requests.post(url=apiUrl, json=pesquisa, headers=headers)
+    logar("PROJETO", f"Cometário adicionado: {comentario}")
+    return r.json()
 
 
 if __name__ == "__main__":

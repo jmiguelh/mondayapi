@@ -23,6 +23,7 @@ class Projeto(db.Entity):
     status_agurpado = Optional(str, 50)
     diretor_responsavel = Optional(str)
     equipe = Optional(str)
+    data_lb = Optional(datetime)
 
 
 class Controle(db.Entity):
