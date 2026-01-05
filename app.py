@@ -99,8 +99,8 @@ def monday():
 
     st.title("Portfólio TI - 2026")
 
-    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
-        ["Resumo", "COE", "Infra", "Segurança", "Sistemas", "PETI Lunelli"]
+    tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(
+        ["Resumo", "COE", "BI", "Infra", "Segurança", "Sistemas", "PETI Lunelli"]
     )
 
     ### Resumo ###
@@ -111,22 +111,28 @@ def monday():
     with tab2:
         aba_coe()
 
-    ### Infra ###
+    ### BI ###
     with tab3:
+        setor = "BI"
+        aba_setor(setor, df)
+
+    ### Infra ###
+    with tab4:
         setor = "Infra"
         aba_setor(setor, df)
 
     ### Segurança ###
-    with tab4:
+    with tab5:
         setor = "Segurança"
         aba_setor(setor, df)
 
     ### Sistema ###
-    with tab5:
+    with tab6:
         setor = "Sistemas"
         aba_setor(setor, df)
+
     ### PETI Lunelli ###
-    with tab6:
+    with tab7:
         setor = "PETI LUNELLI"
         aba_setor(setor, df)
 
@@ -261,7 +267,7 @@ def aba_setor(setor, df):
         df_setor[
             [
                 "Projeto",
-                "Resposaveis",
+                "Responsável",
                 "% Evolução",
                 "Status",
                 "Comentários",

@@ -24,7 +24,7 @@ def carregar_projetos() -> pd.DataFrame:
         columns=[
             "id",
             "Projeto",
-            "Resposaveis",
+            "Responsável",
             "Status",
             "Data",
             "% Evolução",
