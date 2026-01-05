@@ -80,7 +80,7 @@ def monday():
     ### Remover o botão Deploy
     st.markdown(
         """
-           <style>
+            <style>
                 .reportview-container {
                     margin-top: -2em;
                 }
@@ -97,7 +97,7 @@ def monday():
     ### Filtros ###
     df = painel.carregar_projetos()
 
-    st.title("Portfólio TI - 2025")
+    st.title("Portfólio TI - 2026")
 
     tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
         ["Resumo", "COE", "Infra", "Segurança", "Sistemas", "PETI Lunelli"]
