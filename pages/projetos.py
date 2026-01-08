@@ -1,17 +1,11 @@
 import streamlit as st
 
 from pages.login import login
-from pages.util import barra_lateral, nome_pagina, menu
-from pages.painel import monday
 
 
-def main():
-    menu(st)
-    nome_pagina(
-        st, "Lunelli - Portfólio TI", layout="wide", initial_sidebar_state="auto"
-    )
-    barra_lateral(st)
-    monday(st)
+def projetos(st):
+    st.stop()
+    pass
 
 
 if __name__ == "__main__":
@@ -22,4 +16,4 @@ if __name__ == "__main__":
             st.rerun()
     else:
         st.write(f"olá, **{st.session_state['access_token']}**! :wave:")
-        main()
+        projetos(st)
