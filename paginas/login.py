@@ -55,24 +55,14 @@ def fetch_user_info(username: str) -> dict | None:
 
 
 def login():
-    # st.set_page_config(
-    #     page_title="Lunelli - Login ",
-    #     page_icon="🧊",
-    #     initial_sidebar_state="collapsed",
-    #     menu_items={""},
-    # )
-    # pages = [
-    #     st.Page("pages/login.py", title="Login"),
-    # ]
-
-    # pg = st.navigation(pages)
-    # pg.run()
-
     with st.form("my_form"):
         username = st.text_input("Login")
         password = st.text_input("Senha", type="password")
         submitted = st.form_submit_button("Login")
         if submitted:
+            if username == "" or password == "":
+                st.error("Usuário e senha devem ser preenchidos.")
+                return None
             if authenticate_ldap(username, password):
                 # st.write(fetch_user_info(username))
                 return username

@@ -44,13 +44,3 @@ def nome_pagina(st, nome, layout="wide", initial_sidebar_state="auto"):
         """,
         unsafe_allow_html=True,
     )
-
-
-def menu(st):
-    pages = [
-        st.Page("pages/painel.py", title="Painel"),
-        st.Page("pages/projetos.py", title="Meus projetos"),
-    ]
-
-    pg = st.navigation(pages)
-    pg.run()

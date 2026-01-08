@@ -1,10 +1,10 @@
 import streamlit as st
 
-from pages.login import login
+from paginas.login import login
 
 
-def projetos(st):
-    st.stop()
+def projetos():
+    # st.stop()
     pass
 
 

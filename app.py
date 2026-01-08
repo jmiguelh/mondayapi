@@ -1,17 +1,24 @@
 import streamlit as st
 
-from pages.login import login
-from pages.util import barra_lateral, nome_pagina, menu
-from pages.painel import monday
+from paginas.login import login
+from paginas.util import barra_lateral, nome_pagina
+from paginas.painel import monday
+from paginas.projetos import projetos
 
 
-def main():
-    menu(st)
+def main(st):
     nome_pagina(
         st, "Lunelli - Portfólio TI", layout="wide", initial_sidebar_state="auto"
     )
     barra_lateral(st)
-    monday(st)
+    pages = [
+        st.Page(monday, title="Painel"),
+        st.Page(projetos, title="Meus projetos"),
+    ]
+
+    pg = st.navigation(pages)
+    pg.run()
+    # monday(st)
 
 
 if __name__ == "__main__":
@@ -21,5 +28,5 @@ if __name__ == "__main__":
             st.session_state["access_token"] = usuario
             st.rerun()
     else:
-        st.write(f"olá, **{st.session_state['access_token']}**! :wave:")
-        main()
+        # st.write(f"olá, **{st.session_state['access_token']}**! :wave:")
+        main(st)

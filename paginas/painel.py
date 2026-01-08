@@ -5,7 +5,7 @@ from streamlit_card import card
 import plotly.express as px
 import random
 import models.painel as painel
-from pages.login import login
+from paginas.login import login
 
 
 COLOR_CARD1 = "#3FDDE8"
@@ -52,12 +52,11 @@ def colorir_linha(row):
     return cor
 
 
-def monday(st):
+def monday():
     ### Filtros ###
     df = painel.carregar_projetos()
 
     st.title("Portfólio TI - 2026")
-    st.write(f"Olá, **{st.session_state['access_token']}**! :wave:")
 
     tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(
         ["Resumo", "COE", "BI", "Infra", "Segurança", "Sistemas", "PETI Lunelli"]
@@ -334,4 +333,3 @@ if __name__ == "__main__":
             st.rerun()
         else:
             monday(st)
-            pass
