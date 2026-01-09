@@ -71,6 +71,12 @@ def login():
                 return None
 
 
+def logout():
+    if "access_token" in st.session_state:
+        del st.session_state["access_token"]
+        st.info("Logout realizado!", icon="ℹ️")
+
+
 if __name__ == "__main__":
     if "access_token" not in st.session_state:
         usuario = login()

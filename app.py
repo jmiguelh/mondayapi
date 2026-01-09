@@ -1,6 +1,6 @@
 import streamlit as st
 
-from paginas.login import login
+from paginas.login import login, logout
 from paginas.util import barra_lateral, nome_pagina
 from paginas.painel import monday
 from paginas.projetos import projetos
@@ -14,11 +14,11 @@ def main(st):
     pages = [
         st.Page(monday, title="Painel"),
         st.Page(projetos, title="Meus projetos"),
+        st.Page(logout, title="Logout", icon=":material/logout:"),
     ]
 
     pg = st.navigation(pages)
     pg.run()
-    # monday(st)
 
 
 if __name__ == "__main__":
