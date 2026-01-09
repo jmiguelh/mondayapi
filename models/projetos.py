@@ -67,6 +67,29 @@ def carregar_comentarios(id_projeto) -> pd.DataFrame:
     return df
 
 
+@db_session
+def carregar_analistas() -> pd.DataFrame:
+    portifolio = os.getenv("BOARD_PORTFOLIO")
+    sql = """select
+                u.nome,	u.mail
+            from
+                usuarios u
+            where
+                u.mail in(
+                select distinct analista
+                from projeto p, 
+                    REGEXP_SPLIT_TO_TABLE(p.equipe, ', ?') as analista);"""
+    result = db.select(sql)
+    df = pd.DataFrame(
+        result,
+        columns=[
+            "Nome",
+            "E-mail",
+        ],
+    )
+    return df
+
+
 db.bind(
     provider="postgres",
     user=os.getenv("POSTGRESQL_USR"),

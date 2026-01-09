@@ -73,6 +73,12 @@ def nome_usuario(mail) -> datetime:
     return u.nome
 
 
+@db_session
+def mail_usuario(nome) -> datetime:
+    u = Usuario.get(nome=nome)
+    return u.mail
+
+
 load_dotenv()
 
 db.bind(
