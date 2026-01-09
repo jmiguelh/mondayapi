@@ -55,7 +55,7 @@ def carregar_projetos(apiUrl: "str", headers: "str", board: "str"):
                     updates {
                         id
                         text_body
-                        updated_at
+                        created_at
                         creator {
                             name
                         }
@@ -115,7 +115,7 @@ def carregar_projetos(apiUrl: "str", headers: "str", board: "str"):
                 id_projeto = id
                 autor = c["creator"]["name"]
                 texto = c["text_body"]
-                atualizacao = c["updated_at"]
+                atualizacao = c["created_at"]
                 logar("COMENTÁROS", f"Projetos: {projeto}")
 
                 inserir_comentario(

@@ -60,6 +60,19 @@ class Robo(db.Entity):
     atualizacao = Optional(datetime)
 
 
+class Usuario(db.Entity):
+    _table_ = "usuarios"
+    id = PrimaryKey(str, 50)
+    nome = Required(str, 255)
+    mail = Optional(str, 255)
+
+
+@db_session
+def nome_usuario(mail) -> datetime:
+    u = Usuario.get(mail=mail)
+    return u.nome
+
+
 load_dotenv()
 
 db.bind(
