@@ -14,11 +14,14 @@ load_dotenv()
 def carregar_projetos(mail) -> pd.DataFrame:
     portifolio = os.getenv("BOARD_PORTFOLIO")
     sql = f"""SELECT id, projeto, resposaveis, status, data, data_lb,
-                evolucao, replace(link,'Projeto - ','') as link, 
-                pcr, setor, status_agurpado, 
-                'https://lunelli-pmo.monday.com/boards/{portifolio}/pulses/'||id as cometarios,
-                diretor_responsavel, equipe
-            FROM projeto """
+                    evolucao, replace(link,'Projeto - ','') as link, 
+                    pcr, setor, status_agurpado, 
+                    'https://lunelli-pmo.monday.com/boards/{portifolio}/pulses/'||id as cometarios,
+                    diretor_responsavel, equipe, 
+                    (SELECT EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - max(c.atualizacao))) / 86400 AS dias_sem_comentario
+                        FROM comentario c 
+                        WHERE c.id_projeto = p.id) 
+                FROM projeto p """
     if mail is not None:
         sql = f"""{sql} WHERE equipe like '%{mail}%';"""
     result = db.select(sql)
@@ -39,6 +42,7 @@ def carregar_projetos(mail) -> pd.DataFrame:
             "Comentários",
             "Diretor Responsável",
             "Equipe",
+            "dias_sem_comentario",
         ],
     )
     df = df.set_index("id")

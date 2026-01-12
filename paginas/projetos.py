@@ -1,3 +1,5 @@
+from datetime import datetime
+import pandas as pd
 import streamlit as st
 
 from paginas.login import login
@@ -68,6 +70,7 @@ def projetos():
         with st.container(border=True):
             linha = event.selection.rows
             st.write(f"Projeto: **{df.iloc[linha[0]]["Projeto"]}**")
+            validacao_projeto(df.iloc[linha[0]])
             df_comentario = carregar_comentarios(df.index[linha[0]])
             for _, row in df_comentario.iterrows():
                 comentario = st.chat_message(
@@ -75,6 +78,28 @@ def projetos():
                 )
                 comentario.write(f"**{row["Autor"]} - {row["Data"]}**")
                 comentario.write(row["Comentário"])
+
+
+def validacao_projeto(df):
+    if df["Status Agrupado"] not in ("Parado", "Concluído"):
+        if df["Data Final"] < datetime.now():
+            st.error("Projeto em atraso! Favor replanejar.", icon="⛔")
+
+        elif pd.isnull(df["Data Final"]) and df["Status"] == "Em progresso":
+            st.error("Projeto sem data final!", icon="⛔")
+
+        if df["Data LB"] is None:
+            st.warning("Projeto sem linha base!", icon="⚠️")
+
+        if df["Equipe"] == "":
+            st.warning("Projeto sem equipe definida!", icon="⚠️")
+
+        dias = df["dias_sem_comentario"] if df["dias_sem_comentario"] is not None else 0
+        if dias > 30:
+            st.warning(
+                f"Projeto com {int(df['dias_sem_comentario'])} dias sem cometário!",
+                icon="⚠️",
+            )
 
 
 if __name__ == "__main__":
