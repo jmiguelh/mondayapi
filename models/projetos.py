@@ -17,7 +17,7 @@ def carregar_projetos(mail) -> pd.DataFrame:
                 evolucao, replace(link,'Projeto - ','') as link, 
                 pcr, setor, status_agurpado, 
                 'https://lunelli-pmo.monday.com/boards/{portifolio}/pulses/'||id as cometarios,
-                diretor_responsavel
+                diretor_responsavel, equipe
             FROM projeto """
     if mail is not None:
         sql = f"""{sql} WHERE equipe like '%{mail}%';"""
@@ -38,6 +38,7 @@ def carregar_projetos(mail) -> pd.DataFrame:
             "Status Agrupado",
             "Comentários",
             "Diretor Responsável",
+            "Equipe",
         ],
     )
     df = df.set_index("id")

@@ -38,6 +38,7 @@ def projetos():
                     "Status",
                     "Data Final",
                     "Data LB",
+                    "Equipe",
                     "Comentários",
                 ]
             ],
@@ -68,7 +69,7 @@ def projetos():
             linha = event.selection.rows
             st.write(f"Projeto: **{df.iloc[linha[0]]["Projeto"]}**")
             df_comentario = carregar_comentarios(df.index[linha[0]])
-            for index, row in df_comentario.iterrows():
+            for _, row in df_comentario.iterrows():
                 comentario = st.chat_message(
                     "user",  # avatar=":material/3p:"
                 )
