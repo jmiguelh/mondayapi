@@ -9,14 +9,21 @@ def projetos():
     if st.session_state["access_token"] != "jose.h":
         mail = f"{st.session_state['access_token']}@lunelli.com.br"
         nome = nome_usuario(mail)
+        st.header(f"Projetos de **{nome}**!")
     else:
         with st.expander(":mag: Filtros"):
             df_analista = carregar_analistas()
-            nome = st.selectbox("Nome:", df_analista["Nome"])
-            mail = mail_usuario(nome)
+            todos = st.checkbox("Todos projetos", key="disabled", value=True)
+            nome = st.selectbox(
+                "Nome:", df_analista["Nome"], disabled=st.session_state.disabled
+            )
+            if not todos:
+                mail = mail_usuario(nome if not todos else None)
+                st.header(f"Projetos de **{nome}**!")
+            else:
+                mail = None
 
     with st.container():
-        st.header(f"Projetos de **{nome}**!")
         df = carregar_projetos(mail)
         df = df.sort_values(
             by=["% Evolução"],

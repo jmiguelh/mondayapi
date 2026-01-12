@@ -18,8 +18,9 @@ def carregar_projetos(mail) -> pd.DataFrame:
                 pcr, setor, status_agurpado, 
                 'https://lunelli-pmo.monday.com/boards/{portifolio}/pulses/'||id as cometarios,
                 diretor_responsavel
-            FROM projeto
-            WHERE equipe like '%{mail}%';"""
+            FROM projeto """
+    if mail is not None:
+        sql = f"""{sql} WHERE equipe like '%{mail}%';"""
     result = db.select(sql)
     df = pd.DataFrame(
         result,
@@ -46,7 +47,6 @@ def carregar_projetos(mail) -> pd.DataFrame:
 
 @db_session
 def carregar_comentarios(id_projeto) -> pd.DataFrame:
-    portifolio = os.getenv("BOARD_PORTFOLIO")
     sql = f"""select c.id, c.autor, c.texto, c.atualizacao 
                 from comentario c
                 where c.id_projeto ='{id_projeto}'
@@ -69,7 +69,6 @@ def carregar_comentarios(id_projeto) -> pd.DataFrame:
 
 @db_session
 def carregar_analistas() -> pd.DataFrame:
-    portifolio = os.getenv("BOARD_PORTFOLIO")
     sql = """select
                 u.nome,	u.mail
             from
