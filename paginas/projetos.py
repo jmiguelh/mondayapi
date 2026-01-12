@@ -37,12 +37,19 @@ def projetos():
                     "% Evolução",
                     "Status",
                     "Data Final",
+                    "Data LB",
                     "Comentários",
                 ]
             ],
             width="stretch",
             hide_index=True,
             column_config={
+                "Data Final": st.column_config.DateColumn(
+                    format="DD/MM/YYYY",
+                ),
+                "Data LB": st.column_config.DateColumn(
+                    format="DD/MM/YYYY",
+                ),
                 "Comentários": st.column_config.LinkColumn(display_text="➡️"),
                 "% Evolução": st.column_config.ProgressColumn(
                     "% Evolução",

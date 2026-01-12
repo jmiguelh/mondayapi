@@ -13,7 +13,7 @@ load_dotenv()
 @db_session
 def carregar_projetos(mail) -> pd.DataFrame:
     portifolio = os.getenv("BOARD_PORTFOLIO")
-    sql = f"""SELECT id, projeto, resposaveis, status, data,
+    sql = f"""SELECT id, projeto, resposaveis, status, data, data_lb,
                 evolucao, replace(link,'Projeto - ','') as link, 
                 pcr, setor, status_agurpado, 
                 'https://lunelli-pmo.monday.com/boards/{portifolio}/pulses/'||id as cometarios,
@@ -29,7 +29,8 @@ def carregar_projetos(mail) -> pd.DataFrame:
             "Projeto",
             "Responsável",
             "Status",
-            "Data",
+            "Data Final",
+            "Data LB",
             "% Evolução",
             "Link",
             "PCR",
@@ -40,7 +41,6 @@ def carregar_projetos(mail) -> pd.DataFrame:
         ],
     )
     df = df.set_index("id")
-    df["Data Final"] = pd.to_datetime(df["Data"]).dt.strftime("%d/%m/%Y")
 
     return df
 
