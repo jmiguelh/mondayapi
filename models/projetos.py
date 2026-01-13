@@ -52,7 +52,7 @@ def carregar_projetos(mail) -> pd.DataFrame:
 
 @db_session
 def carregar_comentarios(id_projeto) -> pd.DataFrame:
-    sql = f"""select c.id, c.autor, c.texto, c.atualizacao 
+    sql = f"""select c.id, c.autor, c.texto, c.atualizacao  AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo' as atualizacao
                 from comentario c
                 where c.id_projeto ='{id_projeto}'
                 order by c.atualizacao desc;"""

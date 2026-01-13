@@ -5,6 +5,21 @@ import streamlit as st
 from paginas.login import login
 from models.db import nome_usuario, mail_usuario
 from models.projetos import carregar_projetos, carregar_comentarios, carregar_analistas
+from monday import alterar_projeto, criar_comentario, carregar
+
+
+opcoes_status = {
+    "Em progresso": 0,
+    "Parado": 1,
+    "Feito": 2,
+    "Em planejamento": 3,
+    "Em validação": 4,
+    "Não iniciado": 5,
+    "Em análise": 6,
+    "Atualizar projeto": 7,
+    "Aguardando Aprovação": 8,
+    "Cancelado": 9,
+}
 
 
 def projetos():
@@ -65,28 +80,87 @@ def projetos():
             on_select="rerun",
             selection_mode="single-row",
         )
-    # Comentários
+
     if len(event.selection.rows) > 0:
         with st.container(border=True):
             linha = event.selection.rows
             st.write(f"Projeto: **{df.iloc[linha[0]]["Projeto"]}**")
             validacao_projeto(df.iloc[linha[0]])
+
+            with st.form(f"form_{df.index[linha[0]]}", border=True):
+                a, b, c = st.columns(3)
+                evolucao = a.number_input(
+                    "% Evolução:",
+                    value=int(df.iloc[linha[0]]["% Evolução"]),
+                    min_value=0,
+                    max_value=100,
+                    step=1,
+                    format="%d",
+                )
+                status = b.selectbox(
+                    "Status:",
+                    opcoes_status,
+                    index=opcoes_status[df.iloc[linha[0]]["Status"]],
+                )
+                data_fim = c.date_input(
+                    "Data Final:",
+                    value=(
+                        df.iloc[linha[0]]["Data Final"]
+                        if df.iloc[linha[0]]["Data Final"] is not None
+                        else datetime.today()
+                    ),
+                )
+                if "texto" not in st.session_state:
+                    st.session_state.texto = ""
+                texto = st.text_area(
+                    "Comentário:",
+                    value=st.session_state.texto,
+                )
+                submitted = st.form_submit_button("Enviar")
+
+                if submitted:
+                    if texto == "":
+                        st.warning("O comentário deve ser preenchido!")
+                    else:
+                        nome = nome_usuario(
+                            f"{st.session_state['access_token']}@lunelli.com.br"
+                        )
+                        texto = f"Autor: {nome}\nEvolução: {evolucao}%\nStatus: {status}\nData Final: {data_fim.strftime("%d/%m/%Y")}\nComentário: {texto}"
+                        resultado = criar_comentario(df.index[linha[0]], texto)
+                        if "errors" in resultado:
+                            st.error(resultado)
+                        else:
+                            resultado = alterar_projeto(
+                                df.index[linha[0]],
+                                str(evolucao),
+                                str(status),
+                                data_fim.strftime("%Y-%m-%d"),
+                            )
+                            if "errors" in resultado:
+                                st.error(resultado)
+                            else:
+                                carregar(True, False)
+                                st.info("Salvo com sucesso!")
+                                st.session_state.texto = ""
+
+            # Comentários
             df_comentario = carregar_comentarios(df.index[linha[0]])
             for _, row in df_comentario.iterrows():
-                comentario = st.chat_message(
-                    "user",  # avatar=":material/3p:"
-                )
+                comentario = st.chat_message("user")  # avatar=":material/3p:"
                 comentario.write(f"**{row["Autor"]} - {row["Data"]}**")
-                comentario.write(row["Comentário"])
+                comentario.markdown(
+                    row["Comentário"].replace("\n", "<br>"), unsafe_allow_html=True
+                )
 
 
 def validacao_projeto(df):
     if df["Status Agrupado"] not in ("Parado", "Concluído"):
-        if df["Data Final"] < datetime.now():
-            st.error("Projeto em atraso! Favor replanejar.", icon="⛔")
+        if df["Data Final"] is not None:
+            if df["Data Final"] < datetime.now():
+                st.error("Projeto em atraso! Favor replanejar.", icon="⛔")
 
-        elif pd.isnull(df["Data Final"]) and df["Status"] == "Em progresso":
-            st.error("Projeto sem data final!", icon="⛔")
+            elif pd.isnull(df["Data Final"]) and df["Status"] == "Em progresso":
+                st.error("Projeto sem data final!", icon="⛔")
 
         if df["Data LB"] is None:
             st.warning("Projeto sem linha base!", icon="⚠️")

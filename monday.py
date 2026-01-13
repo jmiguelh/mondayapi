@@ -16,11 +16,12 @@ from models.db import (
 load_dotenv()
 
 
-def carregar():
+def carregar(projetos=True, robos=True):
     apiUrl, headers, portifolio, coe = parametros()
-
-    carregar_projetos(apiUrl, headers, portifolio)
-    carregar_coe(apiUrl, headers, coe)
+    if projetos:
+        carregar_projetos(apiUrl, headers, portifolio)
+    if robos:
+        carregar_coe(apiUrl, headers, coe)
 
     atualizar()
     logar("MONDAY", "Concluído")
@@ -167,17 +168,23 @@ def inserir_projeto(
             p.resposaveis = resposaveis
             p.status = status
             p.status_agurpado = stautus_agrupado(status)
-            if data != "":
-                data_old = p.data.strftime("%Y-%m-%d") if p.data is not None else ""
-                if data != data_old:
-                    criar_comentario(
-                        id,
-                        data_old,
-                        datetime.strptime(data, "%Y-%m-%d"),
-                    )
-                p.data = datetime.strptime(data, "%Y-%m-%d")
-            if data_lb != "":
-                p.data_lb = datetime.strptime(data_lb, "%Y-%m-%d")
+            data_old = p.data.strftime("%Y-%m-%d") if p.data is not None else ""
+            if data != data_old:
+                criar_comentario(
+                    id,
+                    comentario_alteracao_data_fim(
+                        (
+                            datetime.strptime(data_old, "%Y-%m-%d")
+                            if data_old != ""
+                            else None
+                        ),
+                        datetime.strptime(data, "%Y-%m-%d") if data != "" else None,
+                    ),
+                )
+            p.data = datetime.strptime(data, "%Y-%m-%d") if data != "" else None
+            p.data_lb = (
+                datetime.strptime(data_lb, "%Y-%m-%d") if data_lb != "" else None
+            )
             p.evolucao = evolucao
             p.link = link
             p.pcr = pcr
@@ -245,17 +252,20 @@ def stautus_agrupado(status: "str") -> str:
     return retorno
 
 
-def criar_comentario(
-    id_projeto: "str",
+def comentario_alteracao_data_fim(
     data_old: "datetime",
     data_new: "datetime",
 ):
-    apiUrl, headers, portifolio, coe = parametros()
-
-    if data_old != "":
-        comentario = f"Atualização da data de conclusão do projeto:<br>Data antiga: {data_old.strftime('%d/%m/%Y')}<br>Data nova: {data_new.strftime('%d/%m/%Y')}"
+    if data_old is None:
+        return f"Atualização da data de conclusão do projeto:<br>Data antiga: N/a<br>Data nova: {data_new.strftime("%d/%m/%Y")}"
+    elif data_new is None:
+        return f"Atualização da data de conclusão do projeto:<br>Data antiga: {data_old.strftime("%d/%m/%Y")}<br>Data nova: N/A"
     else:
-        comentario = f"Atualização da data de conclusão do projeto:<br>Data antiga: N/A<br>Data nova: {data_new.strftime('%d/%m/%Y')}"
+        return f"Atualização da data de conclusão do projeto:<br>Data antiga: {data_old.strftime("%d/%m/%Y")}<br>Data nova: {data_new.strftime("%d/%m/%Y")}"
+
+
+def criar_comentario(id_projeto: "str", comentario: "str"):
+    apiUrl, headers, portifolio, coe = parametros()
 
     query = """mutation {
                 create_update(
@@ -268,12 +278,35 @@ def criar_comentario(
                 }
                 }""" % (
         id_projeto,
-        comentario,
+        comentario.replace("\n", "\\n"),
     )
-
+    # logar("PROJETO", f"{query}")
     pesquisa = {"query": query}
     r = requests.post(url=apiUrl, json=pesquisa, headers=headers)
-    logar("PROJETO", f"Cometário adicionado: {comentario}")
+    return r.json()
+
+
+def alterar_projeto(id_projeto: "str", evolucao: "str", status: "str", data_fim: "str"):
+    apiUrl, headers, portifolio, _ = parametros()
+
+    query = """mutation {
+                change_multiple_column_values(
+                    board_id: %s
+                    item_id: %s
+                    column_values: "{\\"n_meros\\":%s, \\"status\\":{\\"label\\":\\"%s\\"}, \\"data\\":\\"%s\\"}"
+                ) {
+                    id
+                }
+                }""" % (
+        portifolio,
+        id_projeto,
+        evolucao,
+        status,
+        data_fim,
+    )
+    # logar("PROJETO", f"{query}")
+    pesquisa = {"query": query}
+    r = requests.post(url=apiUrl, json=pesquisa, headers=headers)
     return r.json()
 
 
