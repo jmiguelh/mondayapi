@@ -106,7 +106,7 @@ def projetos():
                     "Data Final:",
                     value=(
                         df.iloc[linha[0]]["Data Final"]
-                        if df.iloc[linha[0]]["Data Final"] is not None
+                        if not pd.isna(df.iloc[linha[0]]["Data Final"])
                         else datetime.today()
                     ),
                 )
@@ -139,7 +139,7 @@ def projetos():
                             if "errors" in resultado:
                                 st.error(resultado)
                             else:
-                                carregar(True, False)
+                                carregar(id_projeto=df.index[linha[0]])
                                 st.info("Salvo com sucesso!")
                                 st.session_state.texto = ""
 

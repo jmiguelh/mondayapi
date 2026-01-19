@@ -16,14 +16,16 @@ from models.db import (
 load_dotenv()
 
 
-def carregar(projetos=True, robos=True):
+def carregar(projetos=True, robos=True, id_projeto=0):
     apiUrl, headers, portifolio, coe = parametros()
-    if projetos:
-        carregar_projetos(apiUrl, headers, portifolio)
-    if robos:
-        carregar_coe(apiUrl, headers, coe)
-
-    atualizar()
+    if id_projeto != 0:
+        carregar_projeto(apiUrl, headers, id_projeto)
+    else:
+        if projetos:
+            carregar_projetos(apiUrl, headers, portifolio)
+        if robos:
+            carregar_coe(apiUrl, headers, coe)
+        atualizar()
     logar("MONDAY", "Concluído")
 
 
@@ -75,58 +77,62 @@ def carregar_projetos(apiUrl: "str", headers: "str", board: "str"):
     for s in r.json()["data"]["boards"][0]["groups"]:
         setor = s["title"].replace("PLANO ESTRATÉGICO TI E DIGITAL   - ", "")
         for p in s["items_page"]["items"]:
-            id = p["id"]
-            projeto = p["name"]
-            resposaveis = p["column_values"][1]["text"]
-            status = p["column_values"][2]["text"]
-            data = p["column_values"][3]["text"]
-            evolucao = p["column_values"][4]["text"]
-            link = p["column_values"][5]["text"]
-            equipe = (
-                p["column_values"][6]["text"]
-                if p["column_values"][6]["text"] is not None
-                else ""
-            )
-            pcr = p["column_values"][7]["text"]
-            atualizacao = p["updated_at"]
-            data_lb = p["column_values"][8]["text"]
-            diretor_responsavel = (
-                p["column_values"][9]["text"]
-                if p["column_values"][9]["text"] is not None
-                else ""
-            )
-            logar("PROJETOS", f"Projetos: {projeto}")
-            inserir_projeto(
-                id,
-                projeto,
-                resposaveis,
-                status,
-                data,
-                data_lb,
-                evolucao,
-                link,
-                pcr,
-                setor,
-                atualizacao,
-                diretor_responsavel,
-                equipe,
-            )
-            for c in p["updates"]:
-                id_comentario = c["id"]
-                id_projeto = id
-                autor = c["creator"]["name"]
-                texto = c["text_body"]
-                atualizacao = c["created_at"]
-                logar("COMENTÁROS", f"Projetos: {projeto}")
-
-                inserir_comentario(
-                    id_comentario,
-                    id_projeto,
-                    autor,
-                    texto,
-                    atualizacao,
-                )
+            salvar_projeto(setor, p)
     logar("PROJETOS", "Concluído projetos")
+
+
+def salvar_projeto(setor, p):
+    id = p["id"]
+    projeto = p["name"]
+    resposaveis = p["column_values"][1]["text"]
+    status = p["column_values"][2]["text"]
+    data = p["column_values"][3]["text"]
+    evolucao = p["column_values"][4]["text"]
+    link = p["column_values"][5]["text"]
+    equipe = (
+        p["column_values"][6]["text"]
+        if p["column_values"][6]["text"] is not None
+        else ""
+    )
+    pcr = p["column_values"][7]["text"]
+    atualizacao = p["updated_at"]
+    data_lb = p["column_values"][8]["text"]
+    diretor_responsavel = (
+        p["column_values"][9]["text"]
+        if p["column_values"][9]["text"] is not None
+        else ""
+    )
+    logar("PROJETOS", f"Projetos: {projeto}")
+    inserir_projeto(
+        id,
+        projeto,
+        resposaveis,
+        status,
+        data,
+        data_lb,
+        evolucao,
+        link,
+        pcr,
+        setor,
+        atualizacao,
+        diretor_responsavel,
+        equipe,
+    )
+    for c in p["updates"]:
+        id_comentario = c["id"]
+        id_projeto = id
+        autor = c["creator"]["name"]
+        texto = c["text_body"]
+        atualizacao = c["created_at"]
+        logar("COMENTÁROS", f"Projetos: {projeto}")
+
+        inserir_comentario(
+            id_comentario,
+            id_projeto,
+            autor,
+            texto,
+            atualizacao,
+        )
 
 
 def inserir_projeto(
@@ -188,7 +194,7 @@ def inserir_projeto(
             p.evolucao = evolucao
             p.link = link
             p.pcr = pcr
-            p.setor = setor
+            p.setor = setor if setor != "" else p.setor
             p.atualizacao = datetime.strptime(atualizacao, "%Y-%m-%dT%H:%M:%S%z")
             p.diretor_responsavel = diretor_responsavel
             p.equipe = equipe
@@ -308,6 +314,46 @@ def alterar_projeto(id_projeto: "str", evolucao: "str", status: "str", data_fim:
     pesquisa = {"query": query}
     r = requests.post(url=apiUrl, json=pesquisa, headers=headers)
     return r.json()
+
+
+def carregar_projeto(apiUrl: "str", headers: "str", id_projeto: "str"):
+    logar("PROJETOS", "Buscando projetos")
+    query = """{
+            items(ids: %s) {
+                id
+                name
+                email
+                updated_at
+                column_values {
+                column {
+                    id
+                    title
+                }
+                id
+                text
+                }
+                updates {
+                id
+                body
+                text_body
+                updated_at
+                created_at
+                creator {
+                    name
+                    email
+                }
+                }
+            }
+    }""" % (
+        id_projeto
+    )
+    pesquisa = {"query": query}
+
+    r = requests.post(url=apiUrl, json=pesquisa, headers=headers)  # make request
+
+    for p in r.json()["data"]["items"]:
+        salvar_projeto("", p)
+    logar("PROJETOS", "Concluído projetos")
 
 
 if __name__ == "__main__":
