@@ -1,11 +1,15 @@
+import os
 import streamlit as st
 from ldap3 import Server, Connection, ALL, SUBTREE
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Configurações do LDAP
-LDAP_URL = "ldap://10.100.1.111"
-LDAP_DOMAIN = "corp.com.br"
-LDAP_SEARCH_BASE = "ou=Usuarios,ou=Unidades de Costura,ou=Grupo Lunelli,dc=corp,dc=com,dc=br,dc=lunelli"
-LDAP_SEARCH_BASE2 = "DC=corp,DC=com,DC=br,dc=lunelli"
+LDAP_URL = os.getenv("LDAP_URL")
+LDAP_DOMAIN = os.getenv("LDAP_DOMAIN")
+LDAP_SEARCH_BASE = os.getenv("LDAP_SEARCH_BASE")
+LDAP_SEARCH_BASE2 = os.getenv("LDAP_SEARCH_BASE2")
 
 
 def _to_username(u: str) -> str:
