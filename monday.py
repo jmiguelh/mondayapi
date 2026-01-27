@@ -252,6 +252,8 @@ def stautus_agrupado(status: "str") -> str:
             retorno = "Não iniciado"
         case "Cancelado":
             retorno = "Concluído"
+        case "Aguardando orçamento":
+            retorno = "Execução"
         case _:
             retorno = status
 
