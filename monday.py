@@ -84,24 +84,47 @@ def carregar_projetos(apiUrl: "str", headers: "str", board: "str"):
 def salvar_projeto(setor, p):
     id = p["id"]
     projeto = p["name"]
-    resposaveis = p["column_values"][1]["text"]
-    status = p["column_values"][2]["text"]
-    data = p["column_values"][3]["text"]
-    evolucao = p["column_values"][4]["text"]
-    link = p["column_values"][5]["text"]
-    equipe = (
-        p["column_values"][6]["text"]
-        if p["column_values"][6]["text"] is not None
-        else ""
-    )
-    pcr = p["column_values"][7]["text"]
     atualizacao = p["updated_at"]
-    data_lb = p["column_values"][8]["text"]
-    diretor_responsavel = (
-        p["column_values"][9]["text"]
-        if p["column_values"][9]["text"] is not None
-        else ""
-    )
+    for c in p["column_values"]:
+        if c["column"]["title"] == "Equipe":
+            equipe = c["text"] if c["text"] is not None else ""
+        elif c["column"]["title"] == "Pessoa":
+            resposaveis = c["text"]
+        elif c["column"]["title"] == "Status":
+            status = c["text"]
+        elif c["column"]["title"] == "Data Final":
+            data = c["text"]
+        elif c["column"]["title"] == "% Evolução":
+            evolucao = c["text"]
+        elif c["column"]["title"] == "Link":
+            link = c["text"]
+        elif c["column"]["title"] == "PCR":
+            pcr = c["text"]
+        elif c["column"]["title"] == "Data final LB":
+            data_lb = c["text"]
+        elif c["column"]["title"] == "Diretor Responsável":
+            diretor_responsavel = c["text"] if c["text"] is not None else ""
+        elif c["column"]["title"] == "Prioridade":
+            prioridade = c["text"]
+
+        # resposaveis = p["column_values"][1]["text"]
+        # status = p["column_values"][2]["text"]
+        # data = p["column_values"][3]["text"]
+        # evolucao = p["column_values"][4]["text"]
+        # link = p["column_values"][5]["text"]
+        # equipe = (
+        #     p["column_values"][6]["text"]
+        #     if p["column_values"][6]["text"] is not None
+        #     else ""
+        # )
+        # pcr = p["column_values"][7]["text"]
+        # atualizacao = p["updated_at"]
+        # data_lb = p["column_values"][8]["text"]
+        # diretor_responsavel = (
+        #     p["column_values"][9]["text"]
+        #     if p["column_values"][9]["text"] is not None
+        #     else ""
+        # )
     logar("PROJETOS", f"Projetos: {projeto}")
     inserir_projeto(
         id,
@@ -117,6 +140,7 @@ def salvar_projeto(setor, p):
         atualizacao,
         diretor_responsavel,
         equipe,
+        str(prioridade),
     )
     for c in p["updates"]:
         id_comentario = c["id"]
@@ -149,6 +173,7 @@ def inserir_projeto(
     atualizacao: "str",
     diretor_responsavel: "str",
     equipe: "str",
+    prioridade: "str",
 ):
     with db_session(optimistic=False):
         p = Projeto.get(id=id)
@@ -167,6 +192,7 @@ def inserir_projeto(
                 atualizacao=datetime.strptime(atualizacao, "%Y-%m-%dT%H:%M:%S%z"),
                 diretor_responsavel=diretor_responsavel,
                 equipe=equipe,
+                prioridade=prioridade,
             )
         else:
             logar("PROJETO", f"Projeto alterado: {projeto}")
@@ -198,6 +224,7 @@ def inserir_projeto(
             p.atualizacao = datetime.strptime(atualizacao, "%Y-%m-%dT%H:%M:%S%z")
             p.diretor_responsavel = diretor_responsavel
             p.equipe = equipe
+            p.prioridade = prioridade
 
 
 def atualizar():
