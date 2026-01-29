@@ -16,7 +16,7 @@ def carregar_projetos() -> pd.DataFrame:
                 evolucao, replace(link,'Projeto - ','') as link, 
                 pcr, setor, status_agurpado, 
                 'https://lunelli-pmo.monday.com/boards/{portifolio}/pulses/'||id as cometarios,
-                diretor_responsavel
+                diretor_responsavel, prioridade
             FROM projeto;"""
     result = db.select(sql)
     df = pd.DataFrame(
@@ -34,6 +34,7 @@ def carregar_projetos() -> pd.DataFrame:
             "Status Agrupado",
             "Comentários",
             "Diretor Responsável",
+            "Prioridade",
         ],
     )
     df = df.set_index("id")

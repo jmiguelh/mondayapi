@@ -233,12 +233,13 @@ def aba_setor(setor, df):
 
     st.write("Projetos")
     df_setor = df_setor.sort_values(
-        by=["% Evolução"],
-        ascending=[False],
+        by=["Prioridade"],
+        ascending=[True],
     )
     st.dataframe(
         df_setor[
             [
+                "Prioridade",
                 "Projeto",
                 "Responsável",
                 "% Evolução",

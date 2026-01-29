@@ -105,7 +105,13 @@ def salvar_projeto(setor, p):
         elif c["column"]["title"] == "Diretor Responsável":
             diretor_responsavel = c["text"] if c["text"] is not None else ""
         elif c["column"]["title"] == "Prioridade":
-            prioridade = c["text"]
+            if c["text"] == "":
+                prioridade = "-"
+            else:
+                if len(c["text"]) < 2:
+                    prioridade = "0" + c["text"]
+                else:
+                    prioridade = c["text"]
 
         # resposaveis = p["column_values"][1]["text"]
         # status = p["column_values"][2]["text"]
