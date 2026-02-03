@@ -114,24 +114,6 @@ def salvar_projeto(setor, p):
                     prioridade = c["text"]
     pcr = "Não"
 
-    # resposaveis = p["column_values"][1]["text"]
-    # status = p["column_values"][2]["text"]
-    # data = p["column_values"][3]["text"]
-    # evolucao = p["column_values"][4]["text"]
-    # link = p["column_values"][5]["text"]
-    # equipe = (
-    #     p["column_values"][6]["text"]
-    #     if p["column_values"][6]["text"] is not None
-    #     else ""
-    # )
-    # pcr = p["column_values"][7]["text"]
-    # atualizacao = p["updated_at"]
-    # data_lb = p["column_values"][8]["text"]
-    # diretor_responsavel = (
-    #     p["column_values"][9]["text"]
-    #     if p["column_values"][9]["text"] is not None
-    #     else ""
-    # )
     logar("PROJETOS", f"Projetos: {projeto}")
     inserir_projeto(
         id,
