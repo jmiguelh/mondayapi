@@ -14,7 +14,7 @@ def carregar_coe(apiUrl: "str", headers: "str", board: "str"):
             title
             position
             color
-            items_page(limit: 100) {
+            items_page(limit: 150) {
                 items {
                     id
                     name
