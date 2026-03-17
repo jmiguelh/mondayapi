@@ -16,13 +16,15 @@ from models.db import (
 load_dotenv()
 
 
-def carregar(projetos=True, robos=True, id_projeto=0):
-    apiUrl, headers, portifolio, coe = parametros()
+def carregar(projetos=True, robos=True, id_projeto=0, demandas=True):
+    apiUrl, headers, portifolio, coe, demanda = parametros()
     if id_projeto != 0:
         carregar_projeto(apiUrl, headers, id_projeto)
     else:
         if projetos:
             carregar_projetos(apiUrl, headers, portifolio)
+        if demandas:
+            carregar_demandas(apiUrl, headers, demanda)
         if robos:
             carregar_coe(apiUrl, headers, coe)
         atualizar()
@@ -35,7 +37,8 @@ def parametros():
     headers = {"Authorization": apiKey}
     portifolio = os.getenv("BOARD_PORTFOLIO")
     coe = os.getenv("BOARD_COE")
-    return apiUrl, headers, portifolio, coe
+    demanda = os.getenv("BOARD_DEMANDAS")
+    return apiUrl, headers, portifolio, coe, demanda
 
 
 def carregar_projetos(apiUrl: "str", headers: "str", board: "str"):
@@ -270,6 +273,28 @@ def stautus_agrupado(status: "str") -> str:
             retorno = "Concluído"
         case "Aguardando orçamento":
             retorno = "Execução"
+
+        # Demandas
+        case "Sum":
+            retorno = "Execução"
+        case "Desenvolvimento":
+            retorno = "Execução"
+        case "Backlog":
+            retorno = "Não iniciado"
+        case "Corretiva":
+            retorno = "Execução"
+        case "Aprov. pendente":
+            retorno = "Não iniciado"
+        case "Orçamento":
+            retorno = "Não iniciado"
+        case "Homologação":
+            retorno = "Execução"
+        case "Erro":
+            retorno = "Execução"
+        case "Levantamento":
+            retorno = "Execução"
+        # Fim demandas
+
         case _:
             retorno = status
 
@@ -289,7 +314,7 @@ def comentario_alteracao_data_fim(
 
 
 def criar_comentario(id_projeto: "str", comentario: "str"):
-    apiUrl, headers, portifolio, coe = parametros()
+    apiUrl, headers, portifolio, coe, demanda = parametros()
 
     query = """mutation {
                 create_update(
@@ -372,6 +397,118 @@ def carregar_projeto(apiUrl: "str", headers: "str", id_projeto: "str"):
     for p in r.json()["data"]["items"]:
         salvar_projeto("", p)
     logar("PROJETOS", "Concluído projetos")
+
+
+def carregar_demandas(apiUrl: "str", headers: "str", board: "str"):
+    logar("DEMANDAS", "Buscando demandas")
+    query = """{
+        boards(ids: %s) {
+            groups {
+                title
+                items_page(limit: 100) {
+                    items {
+                    id
+                    name
+                    updated_at
+                    column_values {
+                        column {
+                        title
+                        }
+                        text
+                    }
+                    }
+                }
+            }
+        }
+    }""" % (
+        board
+    )
+    pesquisa = {"query": query}
+
+    r = requests.post(url=apiUrl, json=pesquisa, headers=headers)  # make request
+
+    for s in r.json()["data"]["boards"][0]["groups"]:
+        setor = "Sistemas"
+        area = s["title"]
+        for p in s["items_page"]["items"]:
+            salvar_demanda(setor, p, area)
+    logar("DEMANDAS", "Concluído demandas")
+
+
+def salvar_demanda(setor, p, area):
+    id = p["id"]
+    projeto = area + " - " + p["name"]
+    atualizacao = p["updated_at"]
+    for c in p["column_values"]:
+        if c["column"]["title"] == "Pessoa":
+            resposaveis = c["text"]
+        elif c["column"]["title"] == "Status":
+            status = c["text"]
+        elif c["column"]["title"] == "Data":
+            data = c["text"]
+        elif c["column"]["title"] == "PCR":
+            pcr = c["text"]
+        elif c["column"]["title"] == "Data LB":
+            data_lb = c["text"]
+        elif c["column"]["title"] == "Prioridade":
+            if c["text"] == "":
+                prioridade = "-"
+            else:
+                if len(c["text"]) < 2:
+                    prioridade = "0" + c["text"]
+                else:
+                    prioridade = c["text"]
+    pcr = "Não"
+
+    logar("DEMANDAS", f"Demandas: {projeto}")
+    inserir_projeto(
+        id,
+        projeto,
+        resposaveis,
+        status,
+        data,
+        data_lb,
+        evolucao_demanda(status),
+        "",  # link,
+        pcr,
+        setor,
+        atualizacao,
+        "",  # diretor_responsavel,
+        "",  # equipe,
+        str(prioridade),
+    )
+
+
+def evolucao_demanda(status: "str") -> str:
+    match status:
+        case "Sum":
+            retorno = 75
+        case "Desenvolvimento":
+            retorno = 50
+        case "Backlog":
+            retorno = 0
+        case "Corretiva":
+            retorno = 50
+        case "Aprov. pendente":
+            retorno = 0
+        case "Orçamento":
+            retorno = 0
+        case "Parado":
+            retorno = 0
+        case "Homologação":
+            retorno = 50
+        case "Cancelado":
+            retorno = 100
+        case "Erro":
+            retorno = 50
+        case "Levantamento":
+            retorno = 50
+        case "Feito":
+            retorno = 100
+        case _:
+            retorno = 0
+
+    return retorno
 
 
 if __name__ == "__main__":
