@@ -115,7 +115,7 @@ def salvar_projeto(setor, p):
                     prioridade = "0" + c["text"]
                 else:
                     prioridade = c["text"]
-    pcr = "Não"
+    # pcr = "Não"
 
     logar("PROJETOS", f"Projetos: {projeto}")
     inserir_projeto(
