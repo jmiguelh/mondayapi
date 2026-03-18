@@ -25,6 +25,7 @@ class Projeto(db.Entity):
     equipe = Optional(str)
     data_lb = Optional(datetime)
     prioridade = Optional(str)
+    demanda = Optional(bool, default=False)
 
 
 class Controle(db.Entity):

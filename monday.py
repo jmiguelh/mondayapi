@@ -133,6 +133,7 @@ def salvar_projeto(setor, p):
         diretor_responsavel,
         equipe,
         str(prioridade),
+        False,
     )
     for c in p["updates"]:
         id_comentario = c["id"]
@@ -166,6 +167,7 @@ def inserir_projeto(
     diretor_responsavel: "str",
     equipe: "str",
     prioridade: "str",
+    demanda: "bool" = False,
 ):
     with db_session(optimistic=False):
         p = Projeto.get(id=id)
@@ -185,6 +187,7 @@ def inserir_projeto(
                 diretor_responsavel=diretor_responsavel,
                 equipe=equipe,
                 prioridade=prioridade,
+                demanda=demanda,
             )
         else:
             logar("PROJETO", f"Projeto alterado: {projeto}")
@@ -217,6 +220,7 @@ def inserir_projeto(
             p.diretor_responsavel = diretor_responsavel
             p.equipe = equipe
             p.prioridade = prioridade
+            p.demanda = demanda
 
 
 def atualizar():
@@ -476,6 +480,7 @@ def salvar_demanda(setor, p, area):
         "",  # diretor_responsavel,
         "",  # equipe,
         str(prioridade),
+        True,
     )
 
 
