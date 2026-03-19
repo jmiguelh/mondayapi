@@ -134,6 +134,7 @@ def salvar_projeto(setor, p):
         equipe,
         str(prioridade),
         False,
+        "",
     )
     for c in p["updates"]:
         id_comentario = c["id"]
@@ -168,6 +169,7 @@ def inserir_projeto(
     equipe: "str",
     prioridade: "str",
     demanda: "bool" = False,
+    chamados: "str" = "",
 ):
     with db_session(optimistic=False):
         p = Projeto.get(id=id)
@@ -188,6 +190,7 @@ def inserir_projeto(
                 equipe=equipe,
                 prioridade=prioridade,
                 demanda=demanda,
+                chamados=chamados,
             )
         else:
             logar("PROJETO", f"Projeto alterado: {projeto}")
@@ -221,6 +224,7 @@ def inserir_projeto(
             p.equipe = equipe
             p.prioridade = prioridade
             p.demanda = demanda
+            p.chamados = chamados
 
 
 def atualizar():
@@ -450,8 +454,10 @@ def salvar_demanda(setor, p, area):
             status = c["text"]
         elif c["column"]["title"] == "Data":
             data = c["text"]
-        elif c["column"]["title"] == "PCR":
-            pcr = c["text"]
+        elif c["column"]["title"] == "Ch. Systêxtil":
+            chamados = c["text"]
+            chamados_limpo = chamados.replace(", ", ",")
+            chamados = chamados_limpo.replace(",", ", ")
         elif c["column"]["title"] == "Data LB":
             data_lb = c["text"]
         elif c["column"]["title"] == "Prioridade":
@@ -481,6 +487,7 @@ def salvar_demanda(setor, p, area):
         "",  # equipe,
         str(prioridade),
         True,
+        chamados,
     )
 
 
