@@ -43,7 +43,7 @@ def carregar_coe(apiUrl: "str", headers: "str", board: "str"):
             id = p["id"]
             robo = p["name"]
             resposaveis = p["column_values"][1]["text"]
-            status = p["column_values"][3]["text"]
+            status = p["column_values"][2]["text"]
             fte = p["column_values"][4]["text"]
             evolucao = ""
             ano = p["column_values"][12]["text"]
