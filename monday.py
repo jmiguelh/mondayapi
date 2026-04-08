@@ -135,6 +135,8 @@ def salvar_projeto(setor, p):
         str(prioridade),
         False,
         "",
+        "",
+        "",
     )
     for c in p["updates"]:
         id_comentario = c["id"]
@@ -170,6 +172,8 @@ def inserir_projeto(
     prioridade: "str",
     demanda: "bool" = False,
     chamados: "str" = "",
+    chamados_soft4: "str" = "",
+    transformacao: "str" = "",
 ):
     with db_session(optimistic=False):
         p = Projeto.get(id=id)
@@ -191,6 +195,8 @@ def inserir_projeto(
                 prioridade=prioridade,
                 demanda=demanda,
                 chamados=chamados,
+                chamados_soft4=chamados_soft4,
+                transformacao=transformacao,    
             )
         else:
             logar("PROJETO", f"Projeto alterado: {projeto}")
@@ -225,6 +231,8 @@ def inserir_projeto(
             p.prioridade = prioridade
             p.demanda = demanda
             p.chamados = chamados
+            p.chamados_soft4 = chamados_soft4
+            p.transformacao = transformacao
 
 
 def atualizar():
@@ -458,6 +466,10 @@ def salvar_demanda(setor, p, area):
             chamados = c["text"]
             chamados_limpo = chamados.replace(", ", ",")
             chamados = chamados_limpo.replace(",", ", ")
+        elif c["column"]["title"] == "Ch Lunelli":
+            chamados_soft4 = c["text"]
+            chamados_limpo = chamados_soft4.replace(", ", ",")
+            chamados_soft4 = chamados_limpo.replace(",", ", ")
         elif c["column"]["title"] == "Data LB":
             data_lb = c["text"]
         elif c["column"]["title"] == "Prioridade":
@@ -468,6 +480,9 @@ def salvar_demanda(setor, p, area):
                     prioridade = "0" + c["text"]
                 else:
                     prioridade = c["text"]
+        elif c["column"]["title"] == "Proj. Transformação":
+            transformacao = c["text"]
+            
     pcr = "Não"
 
     logar("DEMANDAS", f"Demandas: {projeto}")
@@ -488,7 +503,11 @@ def salvar_demanda(setor, p, area):
         str(prioridade),
         True,
         chamados,
+        chamados_soft4,
+        transformacao
+
     )
+    
 
 
 def evolucao_demanda(status: "str") -> str:

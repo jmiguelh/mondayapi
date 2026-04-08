@@ -27,7 +27,8 @@ class Projeto(db.Entity):
     prioridade = Optional(str)
     demanda = Optional(bool, default=False)
     chamados = Optional(str)
-
+    chamados_soft4 = Optional(str)
+    transformacao = Optional(str)
 
 class Controle(db.Entity):
     _table_ = "controle"
